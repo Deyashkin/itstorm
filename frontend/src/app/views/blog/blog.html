@@ -1,8 +1,13 @@
+<!-- blog.html - ОБНОВЛЕННЫЙ ФАЙЛ -->
 <section class="blog">
   <div class="container">
     <h2 class="blog-title">Блог</h2>
 
+
+
     <div class="blog-filters">
+
+      <!-- Плашки выбранных категорий -->
       <div class="blog-tags">
         <app-blog-tags
           [selectedCategories]="selectedCategories"
@@ -10,10 +15,21 @@
         ></app-blog-tags>
       </div>
 
-      <app-filter-select
-        [selectedSort]="sortBy"
-        (sortChange)="onSortChange($event)"
-      ></app-filter-select>
+      <!-- Выпадающий список фильтра -->
+      <div class="filter-dropdown-wrapper">
+        <app-filter-dropdown
+          [selectedCategories]="selectedCategories"
+          (categoriesChange)="onCategorySelect($event)"
+        ></app-filter-dropdown>
+      </div>
+
+
+
+      <!-- Сортировка -->
+<!--      <app-filter-select-->
+<!--        [selectedSort]="sortBy"-->
+<!--        (sortChange)="onSortChange($event)"-->
+<!--      ></app-filter-select>-->
     </div>
 
     <app-article-list

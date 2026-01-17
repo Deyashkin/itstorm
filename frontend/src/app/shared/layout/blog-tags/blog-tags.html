@@ -1,52 +1,8 @@
+<!-- blog-tags.html - ОБНОВЛЕННЫЙ ФАЙЛ -->
 <div class="tags-container">
-  <!-- Доступные категории -->
-  <div class="available-tags">
-    @for (category of availableCategories; track category) {
-      <button
-        type="button"
-        class="tag-selector"
-        [class.selected]="isSelected(category)"
-        (click)="toggleCategory(category)"
-      >
-        <span class="tag-selector__text">{{ category }}</span>
-
-        @if (isSelected(category)) {
-          <button
-            type="button"
-            class="tag-selector__close"
-            (click)="$event.stopPropagation(); removeCategory(category)"
-            aria-label="Удалить фильтр {{ category }}"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clip-path="url(#clip0_21873_627)">
-                <line x1="1.93553" y1="2.65002" x2="13.9563" y2="14.6708" stroke="#709FDC" stroke-linecap="round"/>
-                <line x1="13.9236" y1="2.62984" x2="1.90278" y2="14.6507" stroke="#709FDC" stroke-linecap="round"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_21873_627">
-                  <rect width="16" height="16" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>
-          </button>
-        }
-      </button>
-    }
-  </div>
-
   <!-- Выбранные категории -->
   @if (selectedCategories.length > 0) {
     <div class="selected-tags">
-      <div class="selected-tags-header">
-        <span class="selected-tags-title">Выбранные фильтры:</span>
-        <button
-          type="button"
-          class="clear-all-btn"
-          (click)="clearAll()"
-        >
-          Очистить все
-        </button>
-      </div>
 
       <div class="selected-tags-list">
         @for (category of selectedCategories; track category) {
@@ -72,6 +28,13 @@
             </button>
           </div>
         }
+        <button
+          type="button"
+          class="clear-all-btn"
+          (click)="clearAll()"
+        >
+          Очистить все
+        </button>
       </div>
     </div>
   }

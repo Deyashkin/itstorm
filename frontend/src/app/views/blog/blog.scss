@@ -8,8 +8,19 @@
   .blog-filters {
     display: flex;
     justify-content: space-between;
-    align-items: start;
-    margin-bottom: 20px;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .filter-dropdown-wrapper {
+      flex-shrink: 0;
+    }
+
+    .blog-tags {
+      flex: 1;
+      min-width: 300px;
+    }
   }
 }
 

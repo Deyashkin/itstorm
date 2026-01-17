@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BlogPaginationComponent } from '../../shared/layout/blog-pagination/blog-pagination';
 import { BlogTagsComponent } from '../../shared/layout/blog-tags/blog-tags';
-import { FilterSelectComponent } from '../../shared/layout/filter-select/filter-select';
 import { ArticleListComponent } from '../../shared/layout/article-list/article-list';
 import { ArticleService } from '../../shared/services/article.service';
 import type { ArticleInterface } from '../../../types/article.interface';
+import {
+  FilterDropdownComponent
+} from '../../shared/layout/filter-dropdown/filter-dropdown';
 
 
 @Component({
@@ -17,8 +19,8 @@ import type { ArticleInterface } from '../../../types/article.interface';
     FormsModule,
     BlogTagsComponent,
     ArticleListComponent,
-    FilterSelectComponent,
-    BlogPaginationComponent
+    BlogPaginationComponent,
+    FilterDropdownComponent
   ],
   templateUrl: './blog.html',
   styleUrl: './blog.scss',
