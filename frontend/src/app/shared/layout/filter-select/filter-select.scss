@@ -1,0 +1,133 @@
+.filter {
+  position: relative;
+  width: 148px;
+}
+
+/* trigger */
+.filter__trigger {
+  font-family: 'Monserrat', sans-serif;
+  width: 100%;
+  height: 21px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: none;
+  outline: none;
+  border: none;
+
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+}
+
+/* dropdown */
+.filter__dropdown {
+  width: 257px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 20px);
+//  left: 0;
+
+  background: #cfe0ff;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.filter__header {
+
+  padding: 12px 23px;
+
+
+}
+
+.filter__close {
+  font-family: 'Monserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-weight: 400;
+  font-size: 16px;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding-inline: 0;
+
+  & svg {
+    rotate: 180deg;
+  }
+}
+
+.filter__list {
+  background: #fff;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  padding: 12px 23px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.filter__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 5px 0;
+  color:  #bebebe;
+
+  &.is-active {
+    color: #1c2a4d;
+  }
+
+  button {
+    line-height: 130%;
+    color: #bebebe;
+    font-weight: 400;
+    font-size: 24px;
+  }
+}
+
+.filter__item button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.filter-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__label {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+  }
+
+  &__select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    min-width: 180px;
+
+    &:focus {
+      outline: none;
+      border-color: #709fdc;
+      box-shadow: 0 0 0 2px rgba(112, 159, 220, 0.2);
+    }
+
+    &:hover {
+      border-color: #709fdc;
+    }
+  }
+}

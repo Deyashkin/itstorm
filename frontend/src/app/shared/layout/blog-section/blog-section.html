@@ -1,0 +1,99 @@
+<section class="blog-section">
+  <div class="container">
+    <h2 class="section-title">{{ title }}</h2>
+
+    @if (isLoading) {
+      <div class="loading">Загрузка статей...</div>
+    }
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    @if (!isLoading && !error) {
+    <div class="articles-grid">
+      @for (article of articles; track article.id) {
+        <app-blog-card [article]="article"></app-blog-card>
+      }
+
+      <!--    <article class="article-card">-->
+      <!--      <div class="article-content">-->
+      <!--      <div class="article-image">-->
+      <!--        <img src="../../../../assets/images/blog/blog-1.png" alt="Productivity">-->
+      <!--        <span class="article-tag">Фриланс</span>-->
+      <!--      </div>-->
+      <!--        <h3 class="article-title">6 сайтов для повышения продуктивности</h3>-->
+      <!--        <p class="article-description">-->
+      <!--          Хотите проводить время в сети с пользой? Наша подборка из шести полезных,-->
+      <!--          но малоизвестных сайтов увеличит вашу продуктивность, поможет успевать больше-->
+      <!--          в течение дня и всегда быть на шаг впереди!-->
+      <!--        </p>-->
+      <!--      </div>-->
+      <!--        <a href="#" class="article-link">Читать дальше</a>-->
+      <!--    </article>-->
+
+
+      <!--    <article class="article-card">-->
+      <!--      <div class="article-content">-->
+      <!--      <div class="article-image">-->
+      <!--        <img src="../../../../assets/images/blog/blog-2.png" alt="Client Meeting">-->
+      <!--        <span class="article-tag">Таргет</span>-->
+      <!--      </div>-->
+      <!--        <h3 class="article-title">Как произвести впечатление на нового клиента?</h3>-->
+      <!--        <p class="article-description">-->
+      <!--          Поиск новых клиентов — это сложная задача не только для новичков, но и для-->
+      <!--          опытных специалистов. Мы расскажем, как справиться с волнением, завоевать-->
+      <!--          доверие клиента и произвести на него потрясающее первое впечатление.-->
+      <!--        </p>-->
+      <!--      </div>-->
+      <!--        <a href="#" class="article-link">Читать дальше</a>-->
+      <!--    </article>-->
+
+      <!--    <article class="article-card">-->
+      <!--      <div class="article-content">-->
+      <!--      <div class="article-image">-->
+      <!--        <img src="../../../../assets/images/blog/blog-3.png" alt="Competition">-->
+      <!--        <span class="article-tag">Фриланс</span>-->
+      <!--      </div>-->
+      <!--        <h3 class="article-title">Как бороться с конкуренцией на фрилансе?</h3>-->
+      <!--        <p class="article-description">-->
+      <!--          Конкуренция — это часть нашей жизни. Мы боремся за место работы, за победу-->
+      <!--          на конкурсе и даже за возможность купить последний круассан в любимом кафе.-->
+      <!--          Фриланс не исключение.-->
+      <!--        </p>-->
+      <!--      </div>-->
+      <!--        <a href="#" class="article-link">Читать дальше</a>-->
+      <!--    </article>-->
+
+      <!--    <article class="article-card">-->
+      <!--      <div class="article-content">-->
+      <!--      <div class="article-image">-->
+      <!--        <img src="../../../../assets/images/blog/blog-4.png" alt="SMM">-->
+      <!--        <span class="article-tag">SMM</span>-->
+      <!--      </div>-->
+      <!--        <h3 class="article-title">SMM-специалисты: кто они?</h3>-->
+      <!--        <p class="article-description">-->
+      <!--          Профессия SММ-менеджера набирает все большую популярность. В эпоху интернета-->
+      <!--          уже не только новости – приобретение товаров и услуг уходит в онлайн,-->
+      <!--          а просмотр любимых сайтов становится ежедневной рутиной.-->
+      <!--        </p>-->
+      <!--      </div>-->
+      <!--        <a href="#" class="article-link">Читать дальше</a>-->
+      <!--    </article>-->
+    </div>
+    }
+
+    @if (!isLoading && !error && articles.length === 0) {
+      <div class="no-articles">Статьи не найдены</div>
+    }
+
+    @if (showLink && !isLoading && !error && articles && articles.length > 0) {
+      <a routerLink="/blog" class="blog-link">
+        Перейти в блог
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10.556 15C10.4012 15 10.2464 14.9435 10.1242 14.8224L4.81264 9.55746C3.94909 8.70151 3.94909 7.29647 4.81264 6.44052L10.1242 1.17563C10.3605 0.941456 10.7515 0.941456 10.9878 1.17563C11.224 1.40981 11.224 1.7974 10.9878 2.03158L5.67618 7.29647C5.28514 7.68407 5.28514 8.31392 5.67618 8.70151L10.9878 13.9664C11.224 14.2006 11.224 14.5882 10.9878 14.8224C10.8656 14.9354 10.7108 15 10.556 15Z" fill="#709FDC" />
+        </svg>
+      </a>
+    }
+  </div>
+</section>

@@ -1,0 +1,37 @@
+<section class="reviews">
+  <h2 class="reviews__title">{{ title }}</h2>
+
+  <div class="reviews__wrap">
+    <button class="reviews__nav reviews__nav--prev" type="button" aria-label="Назад">
+      <span class="reviews__nav-icon" aria-hidden="true"></span>
+    </button>
+
+    <button class="reviews__nav reviews__nav--next" type="button" aria-label="Вперёд">
+      <span class="reviews__nav-icon" aria-hidden="true"></span>
+    </button>
+
+    <swiper-container
+      class="reviews__swiper"
+      loop="true"
+      speed="500"
+      navigation="true"
+      navigation-prev-el=".reviews__nav--prev"
+      navigation-next-el=".reviews__nav--next"
+      slides-per-view="3"
+      space-between="24"
+      breakpoints-0-slides-per-view="1"
+      breakpoints-768-slides-per-view="2"
+      breakpoints-1200-slides-per-view="3"
+    >
+      @for (r of reviews; track $index) {
+        <swiper-slide>
+          <article class="review-card">
+            <img class="review-card__avatar" [src]="r.avatarUrl" [alt]="r.name" />
+            <h3 class="review-card__name">{{ r.name }}</h3>
+            <p class="review-card__text">{{ r.text }}</p>
+          </article>
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
+</section>

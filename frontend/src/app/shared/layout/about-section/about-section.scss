@@ -1,0 +1,99 @@
+.about {
+  margin-bottom: 120px;
+
+  .about__container {
+    max-width: 1240px;
+    margin-inline: auto;
+
+    .about__wrapper {
+      display: flex;
+      justify-content: space-between;
+      gap: 68px;
+
+      .about__item {
+
+        .about__content {
+
+          .about__title {
+            margin-top: 0px;
+            margin-bottom: 20px;
+          }
+
+          .about__description {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 130%;
+            color: #1e1a2b;
+            margin-top: 0;
+            margin-bottom: 40px;
+          }
+
+          .about__advantages {
+
+            .advantages__title {
+              margin-top: 0;
+              margin-bottom: 20px;
+              font-family: 'Lora', serif;
+              font-weight: 400;
+              font-size: 26px;
+              line-height: 130%;
+              color: #709fdc;
+            }
+
+            .advantages-list {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              grid-template-rows: repeat(2, 1fr);
+              row-gap: 20px;
+              column-gap: 75px;
+
+              .advantage-item {
+                min-height: 90px;
+                display: flex;
+                align-items: center;
+                column-gap: 20px;
+
+                .advantage-item__number {
+                  position: relative;
+                  width: 40px;
+                  height: 65px;
+                  text-align: center;
+                  font-family: 'Lora', serif;
+                  font-weight: 500;
+                  font-size: 50px;
+                  line-height: 130%;
+                  color: #709fdc;
+
+                  &::after {
+                    position: absolute;
+                    z-index: -1;
+                    top: 28px;
+                    left: 0;
+                    content: '';
+                    display: block;
+                    width: 40px;
+                    height: 40px;
+                    background-color: #b9d5fd;
+                    border-radius: 20px;
+                  }
+                }
+
+                .advantage-item__text {
+                  max-width: 256px;
+                  font-size: 14px;
+                  line-height: 130%;
+                  color: #1e1a2b;
+
+                  span {
+                    font-weight: 500;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

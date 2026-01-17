@@ -1,0 +1,50 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin-inline: auto;
+  position: relative;
+}
+
+h2 {
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 130%;
+  color: #709fdc;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #709fdc;
+  color: #fff;
+  cursor: pointer;
+
+  font-weight: 500;
+  line-height: 130%;
+
+  &:disabled {
+    background: gray;
+    cursor: not-allowed;
+  }
+}
+
+.input {
+  box-sizing: border-box;
+  padding: 20px 64px 20px 20px;
+
+  border: 1.50px solid #709fdc;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 130%;
+
+  &::placeholder {
+  color: #a8aba7;
+  }
+}

@@ -1,0 +1,179 @@
+.hero__wrap {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  .hero-slide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+    height: 500px;
+    overflow: hidden;
+
+    .hero-slide__left {
+      position: relative;
+      padding: 100px 0 100px 80px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        right: -19px;
+        top: -670px;
+        width: 1405px;
+        height: 1404px;
+        border-radius: 50%;
+        background: #bcd3f5;
+        z-index: 1;
+      }
+
+      .hero-slide__content {
+        position: relative;
+        z-index: 2;
+
+        .hero-slide__label {
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 130%;
+          letter-spacing: 0.4em;
+          text-transform: uppercase;
+          color: #709fdc;
+        }
+
+        .hero-slide__title {
+          min-width: 610px;
+          font-family: 'Lora', serif;
+          font-weight: 400;
+          font-size: 50px;
+          line-height: 130%;
+          color: #fff;
+
+          span {
+            color: #709fdc;
+          }
+        }
+
+        .hero-slide__description {
+          max-width: 456px;
+          margin-top: 20px;
+          font-size: 24px;
+          font-weight: 400;
+          line-height: 130%;
+          color: #fff;
+        }
+
+        .hero-slide__button {
+          margin-top: 40px;
+          border-radius: 5px;
+          padding: 15px 40px;
+          width: 163px;
+          height: 51px;
+          background: #709fdc;
+
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 130%;
+          color: #fff;
+        }
+      }
+    }
+
+    .hero-slide__right {
+      position: relative;
+      z-index: 0;
+      background: #fff;
+
+      .hero-slide__image {
+        position: absolute;
+        right: 0;
+        width: 750px;
+        height: 100%;
+        display: block;
+      }
+    }
+  }
+}
+
+.hero__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 44px;
+  line-height: 44px;
+  cursor: pointer;
+}
+
+.hero__nav--prev {
+  left: 10px;
+}
+
+.hero__nav--next {
+  right: 10px;
+}
+
+.hero__swiper {
+  /* точки */
+  --swiper-pagination-color: #fff; /* активная */
+  --swiper-pagination-bullet-inactive-color: #ffffff; /* неактивные */
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+  --swiper-pagination-bullet-size: 10px;
+  --swiper-pagination-bullet-horizontal-gap: 10px;
+  --swiper-pagination-bottom: 20px;
+  --swiper-navigation-color: #071739;
+}
+
+/* Неактивные буллеты: только обводка 1px, без заливки */
+.hero__swiper::part(bullet) {
+  width: var(--swiper-pagination-bullet-size);
+  height: var(--swiper-pagination-bullet-size);
+  border: 1px solid #fff;
+  background: transparent;
+  opacity: 1;
+  box-sizing: border-box;
+}
+
+/* Активный буллет: заливка белая */
+.hero__swiper::part(bullet-active) {
+  background: #fff;
+  border-color: #fff;
+}
+
+/* ===== HERO ARROWS (SVG MASK) ===== */
+.hero__nav {
+  /* у тебя позиционирование уже есть — оставь как есть */
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hero__nav-icon {
+  width: 35px;
+  height: 35px;
+
+  /* цвет иконки */
+  background-color: #fff;
+
+  /* сама “форма” иконки берётся из SVG */
+  -webkit-mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+  mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+}
+
+/* Правую стрелку делаем зеркальной, чтобы не хранить второй svg */
+.hero__nav--next .hero__nav-icon {
+  transform: scaleX(-1);
+}
+
+/* Hover/active (по желанию) */
+.hero__nav:hover .hero__nav-icon {
+  opacity: 0.8;
+}
+.hero__nav:active .hero__nav-icon {
+  opacity: 0.6;
+}

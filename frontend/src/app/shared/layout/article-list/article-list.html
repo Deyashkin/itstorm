@@ -1,0 +1,21 @@
+<div class="articles-container">
+  @if (isLoading) {
+    <div class="loading">Загрузка статей...</div>
+  } @else if (error) {
+    <div class="error">
+      {{ error }}
+    </div>
+  } @else {
+    @if (articles.length === 0) {
+      <div class="no-articles">
+        Статьи не найдены
+      </div>
+    } @else {
+      <div class="articles-grid">
+        @for (article of articles; track article.id) {
+          <app-blog-card [article]="article"></app-blog-card>
+        }
+      </div>
+    }
+  }
+</div>

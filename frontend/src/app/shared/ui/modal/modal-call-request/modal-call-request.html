@@ -1,0 +1,53 @@
+@if (open) {
+
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Бесплатная консультация"
+    [attr.aria-label]="stage === 'form' ? 'Закажите бесплатную консультацию!' : 'Спасибо за заявку'"
+
+    (click)="onBackdropClick()"
+  >
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <button class="modal-close" type="button" (click)="close.emit()" aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="1.93562" y1="2.64999" x2="13.9564" y2="14.6708" stroke="#BEBEBE" stroke-linecap="round" />
+          <line x1="13.9236" y1="2.62978" x2="1.90277" y2="14.6506" stroke="#BEBEBE" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      @if (stage === 'form') {
+        <div class="modal-head">
+          <div class="modal-title">Закажите бесплатную консультацию!</div>
+        </div>
+
+        <form class="modal-form" [formGroup]="callForm" (ngSubmit)="submit()">
+          <label class="field">
+            <input class="input modal-input" type="text" formControlName="name" placeholder="Ваше имя" />
+          </label>
+
+          <label class="field">
+            <input class="input modal-input" type="tel" formControlName="phone" placeholder="+7 (___) ___-__-__" />
+          </label>
+
+          <button class="button" type="submit" [disabled]="callForm.invalid || isSubmitting">
+            Заказать звонок
+          </button>
+        </form>
+      } @else {
+        <div class="modal-head modal-head_center">
+          <div class="modal-title modal-title_thanks">Спасибо за вашу заявку!</div>
+        </div>
+
+        <div class="modal-text">
+          Мы свяжемся с вами при первой же возможности.
+        </div>
+
+        <button class="button modal-ok" type="button" (click)="close.emit()">
+          Окей
+        </button>
+      }
+    </div>
+  </div>
+}

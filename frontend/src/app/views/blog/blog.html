@@ -1,0 +1,31 @@
+<section class="blog">
+  <div class="container">
+    <h2 class="blog-title">Блог</h2>
+
+    <div class="blog-filters">
+      <div class="blog-tags">
+        <app-blog-tags
+          [selectedCategories]="selectedCategories"
+          (categoriesChange)="onCategorySelect($event)"
+        ></app-blog-tags>
+      </div>
+
+      <app-filter-select
+        [selectedSort]="sortBy"
+        (sortChange)="onSortChange($event)"
+      ></app-filter-select>
+    </div>
+
+    <app-article-list
+      [articles]="articles"
+      [isLoading]="isLoading"
+      [error]="error"
+    ></app-article-list>
+
+    <app-blog-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-blog-pagination>
+  </div>
+</section>

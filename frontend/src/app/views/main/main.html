@@ -1,0 +1,36 @@
+<app-hero-slider
+  [slides]="heroSlides"
+  [onOrderClick]="openOrderModal.bind(this)"
+></app-hero-slider>
+
+<app-services-section
+  [services]="services"
+  (serviceSelected)="onServiceSelected($event)"
+></app-services-section>
+
+<app-about-section></app-about-section>
+
+<app-blog-section
+  [articles]="blogArticles"
+  [isLoading]="isLoadingArticles"
+  [error]="articlesError"
+  title="Популярные статьи из блога"
+  [showLink]="true"
+></app-blog-section>
+
+<app-reviews-slider
+  [reviews]="reviews"
+  title="Отзывы о нашей работе"
+></app-reviews-slider>
+
+<app-contacts-section></app-contacts-section>
+
+<app-modal-order
+  [open]="isOrderModalOpen"
+  [serviceTitle]="orderServiceTitle"
+  [services]="allServiceTitles"
+  [stage]="ModalStage"
+  [isSubmitting]="isSubmitting"
+  (close)="closeOrderModal()"
+  (submitted)="submitOrder($event)"
+></app-modal-order>

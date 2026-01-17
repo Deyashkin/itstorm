@@ -1,0 +1,63 @@
+<section class="hero">
+  <div class="hero__wrap">
+    <button class="hero__nav hero__nav--prev" type="button" aria-label="Назад">
+      <span class="hero__nav-icon" aria-hidden="true"></span>
+    </button>
+
+    <button class="hero__nav hero__nav--next" type="button" aria-label="Вперёд">
+      <span class="hero__nav-icon" aria-hidden="true"></span>
+    </button>
+
+    <swiper-container
+      class="hero__swiper"
+      slides-per-view="1"
+      loop="true"
+      speed="600"
+      pagination="true"
+      navigation="true"
+      navigation-prev-el=".hero__nav--prev"
+      navigation-next-el=".hero__nav--next"
+      autoplay-delay="50000"
+      autoplay-disable-on-interaction="false"
+    >
+      @for (s of slides; track $index) {
+        <swiper-slide>
+          <div class="hero-slide">
+            <div class="hero-slide__left">
+              <div class="hero-slide__content">
+                <div class="hero-slide__label">{{ s.subtitle }}</div>
+
+                <div class="hero-slide__title">
+                  @for (part of s.titleParts; track $index) {
+                    @if (part.isHighlighted) {
+                      <span class="hero-slide__highlight">{{ part.text }}</span>
+                    } @else {
+                      {{ part.text }}
+                    }
+                  }
+                </div>
+
+                @if (s.description) {
+                  <div class="hero-slide__description">
+                    {{ s.description }}
+                  </div>
+                }
+
+                <button class="button hero-slide__button" type="button"
+                        (click)="onOrderClick ? onOrderClick(s.fullTitle) : null">
+                  {{ s.buttonText }}
+                </button>
+              </div>
+            </div>
+
+            <div class="hero-slide__right">
+              <div class="hero-slide__image">
+                <img [src]="s.imageUrl" [alt]="s.fullTitle" />
+              </div>
+            </div>
+          </div>
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
+</section>

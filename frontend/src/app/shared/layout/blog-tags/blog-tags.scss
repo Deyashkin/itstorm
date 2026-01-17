@@ -1,0 +1,165 @@
+// blog-tags.scss - ОБНОВЛЕННЫЙ ФАЙЛ
+
+/* Основные стили тега-селектора */
+.tag-selector {
+  display: inline-flex; /* МЕНЯЕМ НА inline-flex */
+  align-items: center;
+  gap: 8px; /* ДОБАВЛЯЕМ отступ между текстом и крестиком */
+
+  background: none;
+  border: 1.50px solid #709fdc;
+  border-radius: 5px;
+  padding: 8px 15px 8px 20px; /* МЕНЯЕМ padding слева и справа */
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  color: #709fdc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative; /* ДОБАВЛЯЕМ для позиционирования крестика */
+
+  &:hover {
+    background-color: rgba(112, 159, 220, 0.1);
+  }
+
+  &.selected {
+    background-color: #709fdc;
+    color: white;
+    border-color: #709fdc;
+
+    .tag-selector__close {
+      opacity: 1;
+
+      svg line {
+        stroke: white; /* БЕЛЫЙ цвет крестика на синем фоне */
+      }
+    }
+  }
+
+  .tag-selector__text {
+    white-space: nowrap;
+  }
+
+  .tag-selector__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      width: 12px;
+      height: 12px;
+
+      line {
+        stroke: #709fdc;
+        stroke-width: 2px;
+        transition: stroke 0.2s ease;
+      }
+    }
+  }
+}
+
+/* Стили для выбранных тегов в блоке ниже */
+.selected-tags {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8fafc;
+  border-radius: 5px;
+
+  .selected-tags-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .selected-tags-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .clear-all-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #709fdc;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 3px;
+
+      &:hover {
+        background-color: rgba(112, 159, 220, 0.1);
+      }
+    }
+  }
+
+  .selected-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .selected-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 6px 12px 6px 15px;
+      background-color: #709fdc;
+      border-radius: 5px;
+
+      .selected-tag__text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+        color: white;
+        white-space: nowrap;
+      }
+
+      .selected-tag__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+
+        svg {
+          width: 12px;
+          height: 12px;
+
+          line {
+            stroke: white;
+            stroke-width: 2px;
+          }
+        }
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
