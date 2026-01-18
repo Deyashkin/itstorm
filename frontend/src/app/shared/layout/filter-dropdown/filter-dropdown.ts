@@ -1,13 +1,14 @@
-// filter-dropdown.component.ts - НОВЫЙ ФАЙЛ
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  HostListener
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-
-interface Category {
-  id: string;
-  name: string;
-  url: string;
-}
+import type { CategoryInterface } from '../../../../types/category.interface';
 
 @Component({
   selector: 'app-filter-dropdown',
@@ -17,10 +18,10 @@ interface Category {
   styleUrls: ['./filter-dropdown.scss']
 })
 export class FilterDropdownComponent implements OnInit {
-  @Input() selectedCategories: string[] = [];
-  @Output() categoriesChange = new EventEmitter<string[]>();
+  @Input() selectedCategories: string[] = []; // URL категорий
+  @Output() categoriesChange = new EventEmitter<string[]>(); // Эмитим URL
 
-  categories: Category[] = [];
+  categories: CategoryInterface[] = [];
   isLoading = false;
   error: string | null = null;
   isOpen = false;
@@ -35,7 +36,7 @@ export class FilterDropdownComponent implements OnInit {
     this.isLoading = true;
     const apiUrl = 'http://localhost:3000/api/categories';
 
-    this.http.get<Category[]>(apiUrl).subscribe({
+    this.http.get<CategoryInterface[]>(apiUrl).subscribe({
       next: (categories) => {
         this.categories = categories;
         this.isLoading = false;
@@ -48,26 +49,59 @@ export class FilterDropdownComponent implements OnInit {
     });
   }
 
-  toggleDropdown(): void {
+  toggleDropdown(event?: MouseEvent): void {
+    // Если клик был по кнопке, просто переключаем
+    if (event) {
+      event.stopPropagation(); // Останавливаем всплытие
+    }
     this.isOpen = !this.isOpen;
   }
 
-  toggleCategory(categoryName: string): void {
-    const index = this.selectedCategories.indexOf(categoryName);
+  // Закрываем dropdown при клике в любом месте документа
+  @HostListener('document:click')
+  closeDropdown(): void {
+    this.isOpen = false;
+  }
+
+  // Но не закрываем при клике внутри dropdown
+  @HostListener('click', ['$event'])
+  onClick(event: MouseEvent): void {
+    event.stopPropagation(); // Останавливаем всплытие клика
+  }
+
+  toggleCategory(categoryUrl: string, event?: MouseEvent): void {
+    if (event) {
+      event.stopPropagation(); // Останавливаем всплытие
+    }
+
+    const index = this.selectedCategories.indexOf(categoryUrl);
     let newCategories: string[];
 
     if (index === -1) {
-      // Добавляем категорию
-      newCategories = [...this.selectedCategories, categoryName];
+      newCategories = [...this.selectedCategories, categoryUrl];
     } else {
-      // Удаляем категорию
-      newCategories = this.selectedCategories.filter(c => c !== categoryName);
+      newCategories = this.selectedCategories.filter(c => c !== categoryUrl);
     }
 
     this.categoriesChange.emit(newCategories);
   }
 
-  isSelected(categoryName: string): boolean {
-    return this.selectedCategories.includes(categoryName);
+  isSelected(categoryUrl: string): boolean {
+    return this.selectedCategories.includes(categoryUrl);
+  }
+
+  getCategoryName(categoryUrl: string): string {
+    const category = this.categories.find(c => c.url === categoryUrl);
+    return category ? category.name : categoryUrl;
+  }
+
+  getFilterButtonText(): string {
+    if (this.selectedCategories.length === 0) {
+      return 'Фильтр';
+    } else if (this.selectedCategories.length === 1) {
+      return this.getCategoryName(this.selectedCategories[0]);
+    } else {
+      return `Фильтр (${this.selectedCategories.length})`;
+    }
   }
 }

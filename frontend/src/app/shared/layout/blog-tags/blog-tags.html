@@ -1,18 +1,16 @@
-<!-- blog-tags.html - ОБНОВЛЕННЫЙ ФАЙЛ -->
 <div class="tags-container">
-  <!-- Выбранные категории -->
   @if (selectedCategories.length > 0) {
     <div class="selected-tags">
-
       <div class="selected-tags-list">
-        @for (category of selectedCategories; track category) {
+        @for (categoryUrl of selectedCategories; track categoryUrl) {
+          @let categoryName = getCategoryName(categoryUrl);
           <div class="selected-tag">
-            <span class="selected-tag__text">{{ category }}</span>
+            <span class="selected-tag__text">{{ categoryName }}</span>
             <button
               type="button"
               class="selected-tag__close"
-              (click)="removeCategory(category)"
-              aria-label="Удалить фильтр {{ category }}"
+              (click)="removeCategory(categoryUrl)"
+              aria-label="Удалить фильтр {{ categoryUrl }}"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_21710_627)">

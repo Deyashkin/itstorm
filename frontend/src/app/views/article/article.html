@@ -1,1 +1,50 @@
-<p>article works!</p>
+<div class="article-page">
+  @if (isLoading) {
+    <div class="loading">Загрузка статьи...</div>
+  } @else if (error) {
+    <div class="error">
+      {{ error }}
+      <a routerLink="/blog" class="back-link">Вернуться к статьям</a>
+    </div>
+  } @else if (article) {
+    <article class="article-full">
+      <!-- Заголовок и мета-информация -->
+      <header class="article-header">
+        <div class="article-meta">
+          <span class="article-category">{{ article.category }}</span>
+          <span class="article-date">{{ getFormattedDate(article.date) }}</span>
+        </div>
+        <h1 class="article-title">{{ article.title }}</h1>
+        @if (article.description) {
+          <p class="article-description">{{ article.description }}</p>
+        }
+      </header>
+
+      <!-- Изображение статьи -->
+      @if (article.image) {
+        <div class="article-image">
+          <img [src]="getImageUrl(article.image)" [alt]="article.title">
+        </div>
+      }
+
+      <!-- Содержимое статьи (HTML) -->
+      @if (article && articleContent) {
+        <div class="article-content" [innerHTML]="articleContent"></div>
+      }
+
+      <!-- Кнопка возврата -->
+      <div class="article-footer">
+        <a routerLink="/blog" class="back-link">
+          ← Вернуться к статьям
+        </a>
+      </div>
+    </article>
+  } @else {
+    <div class="not-found">
+      Статья не найдена
+      <a routerLink="/blog" class="back-link">Вернуться к статьям</a>
+    </div>
+  }
+</div>
+
+

@@ -10,7 +10,6 @@ import {
   FilterDropdownComponent
 } from '../../shared/layout/filter-dropdown/filter-dropdown';
 
-
 @Component({
   selector: 'app-blog',
   standalone: true,
@@ -26,7 +25,6 @@ import {
   styleUrl: './blog.scss',
 })
 
-
 export class Blog implements OnInit {
 
   private articleService = inject(ArticleService);
@@ -40,9 +38,8 @@ export class Blog implements OnInit {
   totalPages = 1;
   totalArticles = 0;
 
-  // Фильтры
   selectedCategories: string[] = [];
-  sortBy: string = 'newest'; // newest, oldest, popular
+  // sortBy: string = 'newest';
 
   ngOnInit() {
     this.loadArticles();
@@ -50,9 +47,10 @@ export class Blog implements OnInit {
 
   onCategorySelect(categories: string[]): void {
     this.selectedCategories = categories;
-    console.log('Selected categories:', categories);
-    // Здесь можно вызвать обновление статей через ArticleListComponent если нужно
+    this.currentPage = 1;
+    this.loadArticles();
   }
+
 
   loadArticles(): void {
     this.isLoading = true;
@@ -66,9 +64,6 @@ export class Blog implements OnInit {
           this.totalArticles = response.count;
           this.totalPages = response.pages;
 
-          console.log('Загружено статей:', this.articles.length);
-          console.log('Всего страниц:', this.totalPages);
-          console.log('Всего статей:', this.totalArticles);
         } else {
           this.error = 'Нет данных для отображения';
         }
@@ -85,23 +80,15 @@ export class Blog implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.loadArticles(); // ЗАГРУЗКА СТАТЕЙ ДЛЯ НОВОЙ СТРАНИЦЫ
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // ПРОКРУТКА ВВЕРХ
+    this.loadArticles();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onSortChange(sortBy: string) {
-    this.sortBy = sortBy;
+    // this.sortBy = sortBy;
     this.currentPage = 1;
-    this.loadArticles(); // ПЕРЕЗАГРУЗКА С УЧЕТОМ СОРТИРОВКИ
+    this.loadArticles();
   }
-
-
-  // onCategorySelect(categories: string[]) {
-  //   this.selectedCategories = categories;
-  //   this.currentPage = 1; // Сбрасываем на первую страницу при изменении фильтров
-  //   this.loadArticles();
-  // }
-
 
 
   // Метод для перехода к детальной статье

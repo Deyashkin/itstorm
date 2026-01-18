@@ -13,7 +13,7 @@ export const routes: Routes = [
     children: [
       {path: '', component: Main},
       { path: 'blog', component: Blog },
-      { path: 'blog/:id', component: Article },
+      { path: 'blog/:url', component: Article },
       {path: 'login', component: Login, canActivate: [authForwardGuard]},
       {path: 'signup', component: Signup, canActivate: [authForwardGuard]},
     ]
