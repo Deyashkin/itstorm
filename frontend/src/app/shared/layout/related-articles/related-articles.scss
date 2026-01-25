@@ -1,0 +1,48 @@
+/* related-articles.scss */
+.related-articles {
+  padding: 0;
+  margin-top: 0;
+
+  .related-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 130%;
+    color: #709fdc;
+  }
+
+  .related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .related-item {
+    width: 100%;
+    max-width: 292px;
+
+    .related-card {
+      width: 100%;
+    }
+  }
+
+  .loading, .error, .no-articles {
+    color: #666;
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f9fa;
+    border-radius: 8px;
+
+    @media (max-width: 768px) {
+      padding: 20px 10px;
+    }
+  }
+
+  .error {
+    color: #dc3545;
+  }
+}

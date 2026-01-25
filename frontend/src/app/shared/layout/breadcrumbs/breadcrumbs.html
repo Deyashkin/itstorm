@@ -1,0 +1,21 @@
+<nav class="breadcrumbs" aria-label="Хлебные крошки">
+  <ol class="breadcrumbs-list">
+    <li class="breadcrumbs-item">
+      <a routerLink="/" class="breadcrumbs-link">Главная</a>
+    </li>
+    <li class="breadcrumbs-separator">/</li>
+    <li class="breadcrumbs-item">
+      <a routerLink="/blog" class="breadcrumbs-link">Блог</a>
+    </li>
+    @if (getCategoryName()) {
+      <li class="breadcrumbs-separator">/</li>
+      <li class="breadcrumbs-item">
+        <span class="breadcrumbs-current">{{ getCategoryName() }}</span>
+      </li>
+    }
+    <li class="breadcrumbs-separator">/</li>
+    <li class="breadcrumbs-item">
+      <span class="breadcrumbs-current">{{ title }}</span>
+    </li>
+  </ol>
+</nav>

@@ -1,3 +1,4 @@
+// article.interface.ts
 export interface ArticleInterface {
   id: string;
   title: string;
@@ -5,24 +6,23 @@ export interface ArticleInterface {
   image: string;
   date: string;
   url: string;
-
   text?: string;
 
-  // Возможные структуры категорий:
-  categoryUrls?: string[]; // Массив URL категорий
-  category?: CategoryReference; // Ссылка на одну категорию
-  categories?: CategoryReference[]; // Массив категорий
+  // Упрощаем: категория может быть строкой или объектом
+  category?: string | CategoryReference;
+
+  // Для фильтрации
+  categoryUrls?: string[];
+  categories?: CategoryReference[];
 }
 
 export interface CategoryReference {
   id?: string;
   name?: string;
   url?: string;
-  // или если категория - это просто строка (URL)
+  // Добавляем category для совместимости
+  category?: string;
 }
-
-// Или используйте union type:
-export type ArticleCategory = string | CategoryReference | (string | CategoryReference)[];
 
 export interface ArticlesResponse {
   count: number;

@@ -1,0 +1,321 @@
+.comments-section {
+  margin-top: 120px;
+
+  .comments-title {
+    margin-bottom: 30px;
+    font-size: 38px;
+    font-weight: 400;
+    font-family: 'Lora', serif;
+    line-height: 130%;
+    color: #709fdc;
+  }
+
+  .auth-prompt {
+//    background: #f8f9fa;
+    border-radius: 8px;
+    padding-block: 20px;
+    margin-bottom: 30px;
+//    text-align: center;
+
+    p {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: #666;
+    }
+
+    .auth-link {
+      color: #709fdc;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .comment-form {
+    max-width: 818px;
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .user-info {
+        strong {
+          font-family: 'Montserrat', sans-serif;
+          color: #333;
+          font-size: 16px;
+        }
+      }
+    }
+
+    .comment-textarea {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 248px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: vertical;
+      margin-bottom: 15px;
+      border: 1.50px solid #709fdc;
+      border-radius: 3px;
+      padding: 20px 64px 20px 20px;
+
+      &::placeholder {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 130%;
+        color: #a8aba7;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #709fdc;
+      }
+
+      &:disabled {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+      }
+    }
+
+    .submit-button {
+      background: #709fdc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 15px 40px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      line-height: 130%;
+
+      &:hover:not(:disabled) {
+        background: #5a8bd9;
+      }
+
+      &:disabled {
+        background: #a0c1f1;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .comments-loading,
+  .load-more-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+
+    .lds-spinner {
+      width: 40px;
+      height: 40px;
+      color: #709fdc;
+    }
+  }
+
+  .no-comments {
+    margin-top: 50px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+
+    p {
+      margin: 0 0 10px 0;
+      font-family: 'Montserrat', sans-serif;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .no-comments-subtitle {
+      font-size: 14px;
+      color: #888;
+    }
+  }
+
+  .comments-list {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    .comment-item {
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        margin-bottom: 15px;
+
+        .comment-avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .comment-user-info {
+          display: flex;
+          flex-direction: column;
+
+          .comment-username {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 130%;
+            color: #709fdc;
+            margin-bottom: 10px;
+          }
+
+          .comment-date {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #bebebe;
+          }
+        }
+      }
+
+      .comment-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        padding-left: 85px;
+        font-weight: 400;
+        line-height: 140%;
+        color: #071739;
+        margin-bottom: 40px;
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: 15px;
+        padding-left: 85px;
+
+        .action-button {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 14px;
+          color: #071739;
+          transition: all 0.2s;
+          padding: 0;
+          font-weight: 600;
+
+          & svg {
+            stroke: #071739;
+          }
+
+
+          &.active {
+            color: #709FDC;
+
+            svg {
+              stroke: #709FDC;
+              fill: #709FDC;
+            }
+          }
+
+          &.like-button:hover,
+          &.like-button.active {
+            color: #709FDC;
+
+            svg {
+              stroke: #709FDC;
+            }
+          }
+
+          &.dislike-button:hover,
+          &.dislike-button.active {
+            color: #709FDC;
+
+            svg {
+              stroke: #709FDC;
+            }
+          }
+
+//          &:hover {
+//            color: #709fdc;
+//          }
+
+        }
+
+//        .comment-stats {
+//          display: flex;
+//          gap: 15px;
+//
+//          .stat-item {
+//            display: flex;
+//            align-items: center;
+//            gap: 6px;
+//            font-family: 'Montserrat', sans-serif;
+//            font-size: 14px;
+//            color: #666;
+//
+//            svg {
+//              width: 16px;
+//              height: 16px;
+//            }
+//          }
+//        }
+      }
+    }
+  }
+
+  .load-more-section {
+    padding-top: 30px;
+    text-align: center;
+
+    .load-more-button {
+      background: #709fdc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #5a8bd9;
+      }
+    }
+  }
+}
+
+.violate-button {
+  &:hover:not(:disabled) {
+    svg path {
+      stroke: #709FDC;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {tap, catchError, map} from 'rxjs/operators';
-import type {ArticleInterface} from '../../../types/article.interface';
+import type {ArticleInterface, CategoryReference} from '../../../types/article.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,10 @@ export class ArticleService {
       });
     }
 
-    params = params.set('sort', sortBy);
+    if (sortBy) {
+      params = params.set('sort', sortBy);
+    }
+
 
     const url = `${this.apiUrl}/articles`;
 
@@ -51,18 +54,31 @@ export class ArticleService {
     return this.getArticles(page, [], sortBy).pipe(
       map(response => {
         const filteredItems = response.items.filter(article => {
-          // если у статьи есть массив categoryUrls
+          // 1. Если у статьи есть массив categoryUrls
           if (article.categoryUrls && Array.isArray(article.categoryUrls)) {
             return article.categoryUrls.includes(categoryUrl);
           }
-          // если у статьи есть поле category с URL
-          if (article.category && article.category.url === categoryUrl) {
-            return true;
+
+          // 2. Если у статьи есть поле category как объект
+          if (article.category && typeof article.category === 'object') {
+            const cat = article.category as CategoryReference;
+            return cat.url === categoryUrl || cat.category === categoryUrl;
           }
-          // если у статьи есть массив categories с объектами
+
+          // 3. Если у статьи есть поле category как строка
+          if (article.category && typeof article.category === 'string') {
+            return article.category === categoryUrl;
+          }
+
+          // 4. Если у статьи есть массив categories
           if (article.categories && Array.isArray(article.categories)) {
-            return article.categories.some(cat => cat.url === categoryUrl);
+            return article.categories.some(cat => {
+              return cat.url === categoryUrl ||
+                cat.category === categoryUrl ||
+                cat.name === categoryUrl;
+            });
           }
+
           return false;
         });
 
@@ -74,6 +90,7 @@ export class ArticleService {
         const endIndex = startIndex + itemsPerPage;
         const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
+        // ВАЖНО: вернуть объект с нужной структурой
         return {
           items: paginatedItems,
           count: totalCount,
@@ -97,6 +114,21 @@ export class ArticleService {
       }),
       catchError(error => {
         console.error('Failed to fetch article:', error);
+        throw error;
+      })
+    );
+  }
+
+  getRelatedArticles(articleUrl: string): Observable<ArticleInterface[]> {
+    const url = `${this.apiUrl}/articles/related/${articleUrl}`;
+    console.log('Fetching related articles:', url);
+
+    return this.http.get<ArticleInterface[]>(url).pipe(
+      tap(articles => {
+        console.log('Related articles received:', articles.length);
+      }),
+      catchError(error => {
+        console.error('Failed to fetch related articles:', error);
         throw error;
       })
     );
