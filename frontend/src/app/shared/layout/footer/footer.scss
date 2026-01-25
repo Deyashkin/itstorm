@@ -44,6 +44,8 @@ footer.footer {
     }
 
     .footer-bottom {
+      display: flex;
+      justify-content: space-between;
 
       .footer-copyright {
         line-height: 130%;
@@ -62,6 +64,14 @@ footer.footer {
 
 .footer-link:hover {
   text-decoration: underline;
+}
+
+.footer-terms {
+  display: inline-block;
+  color: #709FDC;
+  text-decoration: underline;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .social-link {

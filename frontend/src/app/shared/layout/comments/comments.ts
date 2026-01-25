@@ -86,9 +86,11 @@ export class CommentsComponent implements OnInit {
 
     this.commentService.getComments(this.articleId, 0, this.limit).subscribe({
       next: (response: CommentsResponseInterface) => {
-        this.comments = response.comments;
+        // Берем только первые this.limit комментариев из ответа
+        // (сервер игнорирует limit и возвращает все)
+        this.comments = response.comments.slice(0, this.limit);
         this.totalComments = response.allCount;
-        this.offset = response.comments.length;
+        this.offset = this.limit; // Устанавливаем offset для следующей загрузки
         this.isLoading = false;
 
         // Сбрасываем complainedComments перед загрузкой новых действий
@@ -97,10 +99,6 @@ export class CommentsComponent implements OnInit {
         // После загрузки комментариев получаем действия пользователя
         if (this.isAuthenticated) {
           this.loadUserActions();
-        } else {
-          // Если не авторизован, все равно синхронизируем complainedComments
-          this.syncComplainedComments();
-          this.cdr.detectChanges();
         }
 
         this.cdr.detectChanges();
@@ -112,7 +110,32 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  private syncComplainedComments(): void {
+  loadMoreComments(): void {
+    this.loadMoreLoading = true;
+    this.cdr.detectChanges();
+
+    this.commentService.getComments(this.articleId, this.offset, this.loadMoreLimit).subscribe({
+      next: (response) => {
+        const newComments = response.comments;
+
+
+        this.comments = [...this.comments, ...newComments];
+        this.offset = this.comments.length;
+        this.totalComments = response.allCount;
+        this.loadMoreLoading = false;
+
+        // Загружаем действия пользователя для новых комментариев
+        if (this.isAuthenticated) {
+          this.loadUserActions();
+        }
+
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadMoreLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   private loadUserActions(): void {
@@ -136,40 +159,6 @@ export class CommentsComponent implements OnInit {
   }
 
 
-  loadMoreComments(): void {
-    this.loadMoreLoading = true;
-    this.cdr.detectChanges();
-
-    this.commentService.getComments(this.articleId, this.offset, this.loadMoreLimit).subscribe({
-      next: (response) => {
-        const newComments = response.comments;
-
-        // Синхронизируем complainedComments для новых комментариев
-        newComments.forEach(comment => {
-          if (comment.userViolated) {
-            this.complainedComments.add(comment.id);
-          }
-        });
-
-        this.comments = [...this.comments, ...newComments];
-        this.offset = this.comments.length;
-        this.totalComments = response.allCount;
-        this.loadMoreLoading = false;
-
-        // Загружаем действия пользователя для новых комментариев
-        if (this.isAuthenticated) {
-          this.loadUserActions();
-        }
-
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.loadMoreLoading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
   submitComment(): void {
     if (!this.commentText.trim() || !this.isAuthenticated) return;
 
@@ -192,8 +181,7 @@ export class CommentsComponent implements OnInit {
   }
 
   likeComment(commentId: string): void {
-    const comment = this.comments.find(c => c.id === commentId);
-    if (!comment) return;
+    const comment = this.comments.find(c => c.id === commentId);    if (!comment) return;
 
     // Проверяем авторизацию
     if (!this.isAuthenticated) {

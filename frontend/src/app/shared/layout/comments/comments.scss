@@ -115,7 +115,6 @@
   .comments-loading,
   .load-more-section {
     display: flex;
-    justify-content: center;
     align-items: center;
     padding: 40px 0;
 
@@ -127,22 +126,15 @@
   }
 
   .no-comments {
-    margin-top: 50px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 40px;
-    text-align: center;
+    margin-block: 20px 40px;
 
     p {
-      margin: 0 0 10px 0;
       font-family: 'Montserrat', sans-serif;
-      color: #666;
-      font-size: 16px;
-    }
-
-    .no-comments-subtitle {
+      font-weight: 400;
       font-size: 14px;
-      color: #888;
+      line-height: 130%;
+      color: #071739;
+
     }
   }
 
@@ -262,16 +254,19 @@
     text-align: center;
 
     .load-more-button {
-      background: #709fdc;
-      color: white;
+      background: none;
       border: none;
-      border-radius: 8px;
-      padding: 12px 30px;
+      padding: 12px 30px 12px 0;
       font-family: 'Montserrat', sans-serif;
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 500;
       cursor: pointer;
       transition: background-color 0.2s;
+      line-height: 130%;
+      color: #709fdc;
+      display: flex;
+      align-items: center;
+      column-gap: 3px;
 
       &:hover {
         background: #5a8bd9;

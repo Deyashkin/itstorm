@@ -4,7 +4,8 @@ import {
   ModalCallRequest
 } from '../../ui/modal/modal-call-request/modal-call-request';
 import { of } from 'rxjs';
-import { delay } from 'rxjs/operators'; // или из 'rxjs' в зависимости от версии
+import { delay } from 'rxjs/operators';
+import {RouterLink} from '@angular/router'; // или из 'rxjs' в зависимости от версии
 
 
 
@@ -15,6 +16,7 @@ import { delay } from 'rxjs/operators'; // или из 'rxjs' в зависим�
   imports: [
     ReactiveFormsModule,
     ModalCallRequest,
+    RouterLink
   ],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
