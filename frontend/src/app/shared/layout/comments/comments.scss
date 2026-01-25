@@ -11,11 +11,9 @@
   }
 
   .auth-prompt {
-//    background: #f8f9fa;
     border-radius: 8px;
     padding-block: 20px;
     margin-bottom: 30px;
-//    text-align: center;
 
     p {
       margin: 0;
@@ -228,7 +226,6 @@
             stroke: #071739;
           }
 
-
           &.active {
             color: #709FDC;
 
@@ -255,31 +252,7 @@
               stroke: #709FDC;
             }
           }
-
-//          &:hover {
-//            color: #709fdc;
-//          }
-
         }
-
-//        .comment-stats {
-//          display: flex;
-//          gap: 15px;
-//
-//          .stat-item {
-//            display: flex;
-//            align-items: center;
-//            gap: 6px;
-//            font-family: 'Montserrat', sans-serif;
-//            font-size: 14px;
-//            color: #666;
-//
-//            svg {
-//              width: 16px;
-//              height: 16px;
-//            }
-//          }
-//        }
       }
     }
   }
@@ -307,15 +280,3 @@
   }
 }
 
-.violate-button {
-  &:hover:not(:disabled) {
-    svg path {
-      stroke: #709FDC;
-    }
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-}

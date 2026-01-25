@@ -113,12 +113,6 @@ export class CommentsComponent implements OnInit {
   }
 
   private syncComplainedComments(): void {
-    // Синхронизируем complainedComments с userViolated из загруженных комментариев
-    this.comments.forEach(comment => {
-      if (comment.userViolated) {
-        this.complainedComments.add(comment.id);
-      }
-    });
   }
 
   private loadUserActions(): void {
@@ -127,17 +121,10 @@ export class CommentsComponent implements OnInit {
     this.commentService.getArticleCommentActions(this.articleId).subscribe({
       next: (actions: any[]) => {
         if (actions && Array.isArray(actions)) {
-          // Обновляем состояния лайков/дизлайков/жалоб для каждого комментария
           this.comments.forEach(comment => {
             const commentActions = actions.filter(action => action.comment === comment.id);
             comment.userLiked = commentActions.some(action => action.action === 'like');
             comment.userDisliked = commentActions.some(action => action.action === 'dislike');
-            comment.userViolated = commentActions.some(action => action.action === 'violate');
-
-            // Если пользователь уже жаловался, добавляем в complainedComments
-            if (comment.userViolated) {
-              this.complainedComments.add(comment.id);
-            }
           });
           this.cdr.detectChanges();
         }
@@ -190,18 +177,16 @@ export class CommentsComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.commentService.createComment(this.articleId, this.commentText).subscribe({
-      next: (newComment) => {
-        // Просто добавляем новый комментарий в начало массива
-        this.comments.unshift(newComment);
+      next: () => {
+        // После успешной отправки комментария, заново загружаем все комментарии
+        // Это гарантирует, что мы получим актуальные данные с сервера
+        this.loadComments();
         this.commentText = '';
-        this.totalComments++;
-        this.offset++;
         this.isPostingComment = false;
-        this.cdr.detectChanges(); // Используем detectChanges вместо markForCheck
       },
       error: () => {
         this.isPostingComment = false;
-        this.cdr.detectChanges(); // Используем detectChanges вместо markForCheck
+        this.cdr.detectChanges();
       }
     });
   }
@@ -377,22 +362,11 @@ export class CommentsComponent implements OnInit {
       return;
     }
 
-    // Проверяем, не отправляли ли уже жалобу
-    // Проверяем как локальное состояние, так и состояние из сервера
-    const alreadyReported = this.complainedComments.has(commentId) || comment.userViolated;
-    if (alreadyReported) {
-      this.showSnackBar('Вы уже отправляли жалобу на этот комментарий');
-      return;
-    }
-
     this.isComplaining = true;
     this.cdr.detectChanges();
 
     this.commentService.reportComment(commentId).subscribe({
       next: () => {
-        this.complainedComments.add(commentId);
-        // Также обновляем состояние комментария
-        comment.userViolated = true;
         this.showSnackBar('Жалоба успешно отправлена');
         this.isComplaining = false;
         this.cdr.detectChanges();
@@ -418,6 +392,18 @@ export class CommentsComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  requireAuthForLike(): void {
+    this.showSnackBar('Необходимо авторизоваться для оценки комментариев');
+  }
+
+  requireAuthForDislike(): void {
+    this.showSnackBar('Необходимо авторизоваться для оценки комментариев');
+  }
+
+  requireAuthForReport(): void {
+    this.showSnackBar('Для отправки жалобы необходимо авторизоваться');
   }
 
   private showSnackBar(message: string): void {

@@ -31,7 +31,7 @@
   &-image {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 290px;
     overflow: hidden;
     border-radius: 5px;
 
@@ -100,16 +100,15 @@
   &-link {
     align-self: flex-start;
     background: transparent;
-    border: 1px solid #709fdc;
+    border: none;
+    padding: 0;
+    border-bottom: 1px solid #709fdc;
     color: #709fdc;
-    padding: 8px 16px;
-    border-radius: 4px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s;
-    text-decoration: none;
 
     &:hover {
       background: #709fdc;
