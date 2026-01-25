@@ -19,14 +19,13 @@ export type ServiceCardData = {
   templateUrl: './service-card.html',
   styleUrl: './service-card.scss',
 })
+
+
 export class ServiceCardComponent {
   @Input() service!: ServiceCardData;
   @Input() variant: 'default' | 'compact' = 'default';
 
   @Output() buttonClick = new EventEmitter<ServiceCardData>();
-
-
-
 
   onButtonClick() {
     this.buttonClick.emit(this.service);

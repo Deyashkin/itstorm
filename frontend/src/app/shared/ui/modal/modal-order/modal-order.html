@@ -1,5 +1,4 @@
 @if (open) {
-
   <div
     class="modal"
     role="dialog"
@@ -32,7 +31,6 @@
               }
             </select>
           </div>
-
 
           <label class="field">
             <input class="input" type="text" formControlName="name" autocomplete="name" placeholder="Ваше имя"/>
@@ -78,7 +76,6 @@
           </button>
         </form>
 
-        <!-- Добавьте после формы -->
         @if (error) {
           <div class="form-error">
             {{ error }}
@@ -86,7 +83,6 @@
         }
 
       } @else {
-        <!-- СТАДИЯ SUCCESS -->
         <div class="modal-head modal-head_center">
           <div class="modal-title modal-title_thanks">Спасибо за вашу заявку!</div>
         </div>

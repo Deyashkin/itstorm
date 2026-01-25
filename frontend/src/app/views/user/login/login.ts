@@ -16,7 +16,6 @@ import type {DefaultResponseType} from '../../../../types/default-response.type'
   styleUrl: './login.scss'
 })
 
-
 export class Login {
 
   private _snackBar = inject(MatSnackBar);
@@ -74,7 +73,6 @@ export class Login {
 
   private showSnack(message: string): void {
     const ref = this._snackBar.open(message, 'ОК', { duration: 4000 });
-
     const close = () => ref.dismiss();
 
     // Клик/клавиши/колесо/тач — это "пользовательские" события и работают даже если скролл контейнерный
@@ -92,6 +90,4 @@ export class Login {
       document.addEventListener('scroll', close, { once: true, passive: true, capture: true });
     }, 200);
   }
-
-
 }

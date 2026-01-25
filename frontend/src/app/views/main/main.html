@@ -3,12 +3,16 @@
   [onOrderClick]="openOrderModal.bind(this)"
 ></app-hero-slider>
 
-<app-services-section
-  [services]="services"
-  (serviceSelected)="onServiceSelected($event)"
-></app-services-section>
+<section id="services">
+  <app-services-section
+    [services]="services"
+    (serviceSelected)="onServiceSelected($event)"
+  ></app-services-section>
+</section>
 
-<app-about-section></app-about-section>
+<section id="about">
+  <app-about-section></app-about-section>
+</section>
 
 <app-blog-section
   [articles]="blogArticles"
@@ -18,12 +22,16 @@
   [showLink]="true"
 ></app-blog-section>
 
-<app-reviews-slider
-  [reviews]="reviews"
-  title="Отзывы о нашей работе"
-></app-reviews-slider>
+<section id="reviews">
+  <app-reviews-slider
+    [reviews]="reviews"
+    title="Отзывы о нашей работе"
+  ></app-reviews-slider>
+</section>
 
-<app-contacts-section></app-contacts-section>
+<section id="contacts">
+  <app-contacts-section></app-contacts-section>
+</section>
 
 <app-modal-order
   [open]="isOrderModalOpen"

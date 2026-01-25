@@ -1,9 +1,8 @@
-// related-articles.component.ts
 import { Component, Input, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { ArticleInterface } from '../../../../types/article.interface';
 import { ArticleService } from '../../services/article.service';
-import {RelatedBlogCardComponent} from '../related-blog-card/related-blog-card';
+import { RelatedBlogCardComponent } from '../related-blog-card/related-blog-card';
 
 @Component({
   selector: 'app-related-articles',

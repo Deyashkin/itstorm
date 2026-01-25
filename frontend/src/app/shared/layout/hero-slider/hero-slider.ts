@@ -13,7 +13,6 @@ type HeroSlide = {
   imageUrl: string;
 };
 
-
 @Component({
   selector: 'app-hero-slider',
   standalone: true,

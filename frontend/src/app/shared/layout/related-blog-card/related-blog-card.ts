@@ -10,19 +10,19 @@ import type { ArticleInterface } from '../../../../types/article.interface';
   templateUrl: './related-blog-card.html',
   styleUrls: ['./related-blog-card.scss']
 })
+
+
 export class RelatedBlogCardComponent {
   @Input() article!: ArticleInterface;
 
   private router = inject(Router);
 
-  // Навигация к статье
   navigateToArticle(): void {
     if (this.article?.url) {
       this.router.navigate(['/blog', this.article.url]);
     }
   }
 
-  // Получение URL изображения
   getImageUrl(): string {
     if (!this.article?.image) {
       return 'assets/images/placeholder.jpg';
@@ -36,7 +36,6 @@ export class RelatedBlogCardComponent {
     return `assets/images/blog/${image}`;
   }
 
-  // Получение названия категории
   getCategoryName(): string {
     if (!this.article?.category) return '';
 
@@ -72,7 +71,6 @@ export class RelatedBlogCardComponent {
   getShortDescription(): string {
     if (!this.article?.description) return '';
 
-    // Обрезаем до 80 символов для компактного отображения
     const maxLength = 80;
     if (this.article.description.length <= maxLength) {
       return this.article.description;

@@ -1,14 +1,12 @@
-import {Component, inject, type OnDestroy, type OnInit} from '@angular/core';
+import { Component, inject, type OnDestroy, type OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import type {
-  DefaultResponseType
-} from '../../../../types/default-response.type';
-import type {HttpErrorResponse} from '@angular/common/http';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import type { DefaultResponseType } from '../../../../types/default-response.type';
+import type { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 
@@ -25,30 +23,24 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
+
+
 export class Header implements OnInit, OnDestroy  {
   private authService = inject(AuthService);
   private router = inject(Router);
   private _snackBar = inject(MatSnackBar);
   private subscription: Subscription = new Subscription();
 
-
   public user$ = this.authService.user$;
   public isLogged$ = this.authService.isLogged$;
-
-
-
-
-
 
   constructor() {}
 
   ngOnInit(): void {
-    // Проверяем при загрузке компонента
     if (this.authService.getIsLoggedIn() && this.authService.userId) {
       this.authService.loadUserInfo();
     }
 
-    // Подписываемся на изменения
     const sub = this.isLogged$.subscribe(isLogged => {
       if (isLogged && this.authService.userId) {
         this.authService.loadUserInfo();
@@ -60,7 +52,6 @@ export class Header implements OnInit, OnDestroy  {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
 
   private showSnack(message: string): void {
     const ref = this._snackBar.open(message, 'ОК', { duration: 4000 });
@@ -83,9 +74,6 @@ export class Header implements OnInit, OnDestroy  {
     }, 200);
   }
 
-
-
-
   logout(): void {
     this.authService.logout()
       .subscribe({
@@ -107,7 +95,4 @@ export class Header implements OnInit, OnDestroy  {
       this.showSnack('Вы вышли из системы');
     });
   }
-
-
-
 }

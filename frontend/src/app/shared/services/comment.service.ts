@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 import type { CommentInterface, CommentsResponseInterface } from '../../../types/comment.interface';
 import { catchError } from 'rxjs/operators';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class CommentService {
   private apiUrl = 'http://localhost:3000/api';
 
@@ -27,12 +27,6 @@ export class CommentService {
 
     return this.http.get<CommentsResponseInterface>(`${this.apiUrl}/comments`, { params });
   }
-
-  // getTotalCommentsCount(articleId: string): Observable<{ count: number }> {
-  //   return this.http.get<{ count: number }>(`${this.apiUrl}/comments/count`, {
-  //     params: { article: articleId }
-  //   });
-  // }
 
   createComment(articleId: string, text: string): Observable<CommentInterface> {
     return this.http.post<CommentInterface>(`${this.apiUrl}/comments`, {
@@ -53,17 +47,9 @@ export class CommentService {
     });
   }
 
-  getCommentActions(commentId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/comments/${commentId}/actions`);
-  }
-
   getArticleCommentActions(articleId: string): Observable<any> {
     const params = new HttpParams().set('articleId', articleId);
     return this.http.get(`${this.apiUrl}/comments/article-comment-actions`, { params });
-  }
-
-  getCurrentUser(): Observable<{ isAuthenticated: boolean; user?: any }> {
-    return this.http.get<{ isAuthenticated: boolean; user?: any }>(`${this.apiUrl}/auth/me`);
   }
 
   reportComment(commentId: string): Observable<any> {
@@ -73,5 +59,4 @@ export class CommentService {
       catchError(this.handleError)
     );
   }
-
 }

@@ -1,8 +1,8 @@
-import {Component, Input, type OnInit} from '@angular/core';
+import { Component, Input, type OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {BlogCardComponent} from '../blog-card/blog-card';
-import type {ArticleInterface} from '../../../../types/article.interface';
-import {CommonModule} from '@angular/common';
+import { BlogCardComponent } from '../blog-card/blog-card';
+import { CommonModule } from '@angular/common';
+import type { ArticleInterface } from '../../../../types/article.interface';
 
 @Component({
   selector: 'app-blog-section',

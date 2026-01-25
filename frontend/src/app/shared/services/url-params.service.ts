@@ -5,6 +5,8 @@ import { Location } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class UrlParamsService {
   constructor(
     private router: Router,
@@ -27,19 +29,13 @@ export class UrlParamsService {
 
       if (params[key] === null || params[key] === undefined || params[key] === '' ||
         (Array.isArray(params[key]) && params[key].length === 0)) {
-        console.log(`updateUrlParams - удаляем параметр ${key}`);
         delete queryParams[key];
       } else if (Array.isArray(params[key])) {
-        // ПРЕОБРАЗУЕМ МАССИВ В СТРОКУ С РАЗДЕЛИТЕЛЯМИ
         queryParams[key] = params[key].join(',');
-        console.log(`updateUrlParams - устанавливаем строку для ${key}:`, queryParams[key]);
       } else {
         queryParams[key] = params[key].toString();
-        console.log(`updateUrlParams - устанавливаем значение для ${key}:`, params[key]);
       }
     });
-
-    console.log('updateUrlParams - итоговые параметры URL:', queryParams);
 
     // Обновляем URL без перезагрузки страницы
     this.router.navigate([], {
@@ -48,14 +44,11 @@ export class UrlParamsService {
       queryParamsHandling: 'merge',
       replaceUrl: true
     });
-
-    console.log('updateUrlParams - URL обновлен');
   }
 
   // Получить все параметры из URL
   getAllParams(): Params {
     const params = this.route.snapshot.queryParams;
-    console.log('getAllParams - текущие параметры URL:', params);
     return params;
   }
 
@@ -64,12 +57,9 @@ export class UrlParamsService {
     const params = this.getAllParams();
     const value = params[key];
 
-    console.log(`getParam - получен параметр ${key}:`, value);
-
     if (Array.isArray(value)) {
       return value;
     }
-
     return value || null;
   }
 
@@ -92,8 +82,6 @@ export class UrlParamsService {
       // РАЗБИВАЕМ СТРОКУ ПО ЗАПЯТОЙ И УДАЛЯЕМ ПУСТЫЕ ЗНАЧЕНИЯ
       result = categories.split(',').filter(cat => cat.trim() !== '');
     }
-
-    console.log(`getCategories - категории:`, result);
     return result;
   }
 

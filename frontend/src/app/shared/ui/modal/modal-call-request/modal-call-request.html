@@ -6,7 +6,6 @@
     aria-modal="true"
     aria-label="Бесплатная консультация"
     [attr.aria-label]="stage === 'form' ? 'Закажите бесплатную консультацию!' : 'Спасибо за заявку'"
-
     (click)="onBackdropClick()"
   >
     <div class="modal-card" (click)="$event.stopPropagation()">
@@ -21,7 +20,6 @@
         <div class="modal-head">
           <div class="modal-title">Закажите бесплатную консультацию!</div>
         </div>
-
         <form class="modal-form" [formGroup]="callForm" (ngSubmit)="submit()">
           <label class="field">
             <input class="input modal-input" type="text" formControlName="name" placeholder="Ваше имя" />

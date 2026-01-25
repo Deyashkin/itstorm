@@ -1,16 +1,16 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {CategoryService} from '../../services/category.service';
-import type {CategoryInterface} from '../../../../types/category.interface';
+import { CategoryService } from '../../services/category.service';
+import type { CategoryInterface } from '../../../../types/category.interface';
 
 @Component({
   selector: 'app-category-list',
-  standalone: true, // Используем standalone компонент
+  standalone: true,
   imports: [CommonModule],
-  template: `
-  `,
+  template: ``,
   styles: [``]
 })
+
 
 export class CategoryListComponent implements OnInit {
   categories: CategoryInterface[] = [];

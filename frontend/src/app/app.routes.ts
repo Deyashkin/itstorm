@@ -14,8 +14,8 @@ export const routes: Routes = [
     path: '', component: Layout,
     children: [
       {path: '', component: Main},
-      { path: 'blog', component: Blog,  runGuardsAndResolvers: 'paramsOrQueryParamsChange' },
-      { path: 'blog/:url', component: Article },
+      {path: 'blog', component: Blog,  runGuardsAndResolvers: 'paramsOrQueryParamsChange'},
+      {path: 'blog/:url', component: Article},
       {path: 'login', component: Login, canActivate: [authForwardGuard]},
       {path: 'signup', component: Signup, canActivate: [authForwardGuard]},
       {path: 'terms', component: TermsOfService},

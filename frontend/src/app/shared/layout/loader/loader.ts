@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
       position: relative;
       width: 80px;
       height: 80px;
-      color: #709fdc; /* Синий цвет по умолчанию как на скриншоте */
+      color: #709fdc;
     }
     .lds-spinner div {
       transform-origin: 40px 40px;
@@ -98,6 +98,8 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
+
+
 export class LoaderComponent {
-  @Input() color: string = '#709fdc'; // Синий цвет как на скриншоте
+  @Input() color: string = '#709fdc';
 }

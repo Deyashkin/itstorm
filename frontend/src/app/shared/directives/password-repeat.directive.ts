@@ -9,8 +9,9 @@ import {
   selector: '[PasswordRepeat]',
   standalone: true,
 })
-export class PasswordRepeatDirective implements Validator {
 
+
+export class PasswordRepeatDirective implements Validator {
 
   validate(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');

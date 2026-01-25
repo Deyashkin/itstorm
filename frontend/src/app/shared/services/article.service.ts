@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {tap, catchError, map} from 'rxjs/operators';
-import type {ArticleInterface, CategoryReference} from '../../../types/article.interface';
+import { tap, catchError, map } from 'rxjs/operators';
+import type { ArticleInterface, CategoryReference } from '../../../types/article.interface';
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class ArticleService {
   private apiUrl = 'http://localhost:3000/api';
 
@@ -33,7 +35,6 @@ export class ArticleService {
       params = params.set('sort', sortBy);
     }
 
-
     const url = `${this.apiUrl}/articles`;
 
     return this.http.get<{items: ArticleInterface[], count: number, pages: number}>(url, {
@@ -58,18 +59,15 @@ export class ArticleService {
           if (article.categoryUrls && Array.isArray(article.categoryUrls)) {
             return article.categoryUrls.includes(categoryUrl);
           }
-
           // 2. Если у статьи есть поле category как объект
           if (article.category && typeof article.category === 'object') {
             const cat = article.category as CategoryReference;
             return cat.url === categoryUrl || cat.category === categoryUrl;
           }
-
           // 3. Если у статьи есть поле category как строка
           if (article.category && typeof article.category === 'string') {
             return article.category === categoryUrl;
           }
-
           // 4. Если у статьи есть массив categories
           if (article.categories && Array.isArray(article.categories)) {
             return article.categories.some(cat => {
@@ -78,7 +76,6 @@ export class ArticleService {
                 cat.name === categoryUrl;
             });
           }
-
           return false;
         });
 
@@ -90,7 +87,7 @@ export class ArticleService {
         const endIndex = startIndex + itemsPerPage;
         const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
-        // ВАЖНО: вернуть объект с нужной структурой
+        // вернуть объект с нужной структурой
         return {
           items: paginatedItems,
           count: totalCount,

@@ -8,6 +8,5 @@ import {CommonModule} from '@angular/common';
   templateUrl: './terms-of-service.html',
   styleUrl: './terms-of-service.scss',
 })
-export class TermsOfService {
 
-}
+export class TermsOfService {}

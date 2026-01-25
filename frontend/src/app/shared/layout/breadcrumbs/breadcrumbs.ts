@@ -1,4 +1,3 @@
-// breadcrumbs.component.ts
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -11,7 +10,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./breadcrumbs.scss']
 })
 export class BreadcrumbsComponent {
-  @Input() category: any; // Изменяем тип на any
+  @Input() category: any;
   @Input() title: string = '';
 
   // Метод для получения строкового названия категории
@@ -26,7 +25,6 @@ export class BreadcrumbsComponent {
     if (typeof this.category === 'object') {
       return this.category.name || this.category.category || '';
     }
-
     return '';
   }
 }

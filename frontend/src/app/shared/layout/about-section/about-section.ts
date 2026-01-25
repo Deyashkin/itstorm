@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-about-section',
@@ -8,6 +8,6 @@ import {CommonModule} from '@angular/common';
   templateUrl: './about-section.html',
   styleUrl: './about-section.scss',
 })
-export class AboutSectionComponent {
 
-}
+
+export class AboutSectionComponent {}

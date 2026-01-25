@@ -1,11 +1,6 @@
 import {Component, inject,} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../core/auth/auth.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {NgStyle} from '@angular/common';
@@ -14,9 +9,7 @@ import {
 } from '../../../shared/directives/password-repeat.directive';
 import type {LoginResponseType} from '../../../../types/login-response.type';
 import type {HttpErrorResponse} from '@angular/common/http';
-import type {
-  DefaultResponseType
-} from '../../../../types/default-response.type';
+import type {DefaultResponseType} from '../../../../types/default-response.type';
 
 @Component({
   selector: 'app-signup',
@@ -53,7 +46,6 @@ export class Signup {
         this.showSnack('Пароли не совпадают');
         return;
       }
-
 
       this.authService.signup(this.signupForm.value.email, this.signupForm.value.password)
         .subscribe({
@@ -94,7 +86,6 @@ export class Signup {
 
   private showSnack(message: string): void {
     const ref = this._snackBar.open(message, 'ОК', { duration: 4000 });
-
     const close = () => ref.dismiss();
 
     // клики/клавиши/колесо/тач — работают даже если скролл не window, а внутри контейнера
@@ -112,6 +103,4 @@ export class Signup {
       document.addEventListener('scroll', close, { once: true, passive: true, capture: true });
     }, 200);
   }
-
-
 }

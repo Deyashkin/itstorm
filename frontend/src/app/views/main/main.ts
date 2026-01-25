@@ -1,26 +1,16 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  inject,
-  type OnInit
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, type OnInit} from '@angular/core';
 import {ModalOrderComponent,} from '../../shared/ui/modal/modal-order/modal-order';
 import {HttpClient} from '@angular/common/http';
 import {HeroSliderComponent} from '../../shared/layout/hero-slider/hero-slider';
 import {ServicesSectionComponent} from '../../shared/layout/services-section/services-section';
 import {AboutSectionComponent} from '../../shared/layout/about-section/about-section';
 import {ReviewsSliderComponent} from '../../shared/layout/reviews-slider/reviews-slider';
-import type {ServiceCardData} from '../../shared/layout/service-card/service-card';
-import {
-  BlogSectionComponent
-} from '../../shared/layout/blog-section/blog-section';
-import {
-  ContactsSectionComponent
-} from '../../shared/layout/contacts-section/contacts-section';
-import type {BlogPost} from '../../../types/blog-card.type';
+import {BlogSectionComponent} from '../../shared/layout/blog-section/blog-section';
+import {ContactsSectionComponent} from '../../shared/layout/contacts-section/contacts-section';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import type {ArticleInterface} from '../../../types/article.interface';
-
+import type {ServiceCardData} from '../../shared/layout/service-card/service-card';
 
 type HeroSlide = {
   subtitle: string;
@@ -56,9 +46,10 @@ type Review = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 
+export class Main implements OnInit, AfterViewInit, OnDestroy {
 
-export class Main implements OnInit {
-
+  private readonly route = inject(ActivatedRoute);
+  private fragmentSub?: Subscription;
 
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
@@ -78,49 +69,29 @@ export class Main implements OnInit {
     this.loadTopArticles();
   }
 
-  // Временно инициализируем моковые данные прямо в свойстве:
-  // blogArticles: ArticleInterface[] = [
-  //   {
-  //     id: '1',
-  //     title: 'Создание сайтов',
-  //     description: 'В краткие сроки мы создадим качественный и самое главное продающий сайт для продвижения Вашего бизнеса!',
-  //     image: 'blog-1.png',
-  //     date: new Date().toISOString(),
-  //     category: 'Тест',
-  //     url: 'test-article-1'
-  //   },
-  //   {
-  //     id: '2',
-  //     title: 'Продвижение',
-  //     description: 'Вам нужен качественный SMM-специалист или грамотный таргетолог? Мы готовы оказать Вам услугу “Продвижения” на наивысшем уровне!',
-  //     image: 'blog-2.png',
-  //     date: new Date().toISOString(),
-  //     category: 'Тест',
-  //     url: 'test-article-2'
-  //   },
-  //   {
-  //     id: '3',
-  //     title: 'Реклама',
-  //     description: 'Без рекламы не может обойтись ни один бизнес или специалист. Обращаясь к нам, мы гарантируем быстрый прирост клиентов за счёт правильно настроенной рекламы.',
-  //     image: 'blog-3.png',
-  //     date: new Date().toISOString(),
-  //     category: 'Тест',
-  //     url: 'test-article-3'
-  //   },
-  //   {
-  //     id: '4',
-  //     title: 'Копирайтинг',
-  //     description: 'Наши копирайтеры готовы написать Вам любые продающие текста, которые не только обеспечат рост охватов, но и помогут выйти на новый уровень в продажах.',
-  //     image: 'blog-4.png',
-  //     date: new Date().toISOString(),
-  //     category: 'Тест',
-  //     url: 'test-article-4'
-  //   }
-  // ];
+  ngAfterViewInit(): void {
+    this.fragmentSub = this.route.fragment.subscribe((fragment) => {
+      if (!fragment) return;
 
+      // ждём, чтобы DOM секций точно был в наличии
+      setTimeout(() => {
+        const el = document.getElementById(fragment);
+        if (!el) return;
+
+        // если шапка фиксированная — нужен оффсет
+        const headerOffset = 110;
+        const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 0);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.fragmentSub?.unsubscribe();
+  }
 
   loadTopArticles() {
-
     this.isLoadingArticles = true;
     this.articlesError = null;
 
@@ -158,7 +129,6 @@ export class Main implements OnInit {
         }
       });
   }
-
 
   allServiceTitles: string[] = [
     'Создание сайтов',
@@ -203,53 +173,6 @@ export class Main implements OnInit {
       imageUrl: 'assets/images/slider/hero-3.png',
     },
   ];
-
-  // blogPosts: BlogPost[] = [
-  //   {
-  //     id: 1,
-  //     title: '6 сайтов для повышения продуктивности',
-  //     excerpt: 'Хотите проводить время в сети с пользой? Наша подборка из шести полезных, но малоизвестных сайтов увеличит вашу продуктивность, поможет успевать больше в течение дня и всегда быть на шаг впереди!',
-  //     content: 'Полный текст статьи...',
-  //     category: 'Фриланс',
-  //     tag: 'Фриланс',
-  //     imageUrl: 'assets/images/blog/blog-1.png',
-  //     readTime: '5 мин',
-  //     date: '10.01.2024'
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Как произвести впечатление на нового клиента?',
-  //     excerpt: 'Поиск новых клиентов — это сложная задача не только для новичков, но и для опытных специалистов. Мы расскажем, как справиться с волнением, завоевать доверие клиента и произвести на него потрясающее первое впечатление.',
-  //     content: 'Полный текст статьи...',
-  //     category: 'Таргет',
-  //     tag: 'Таргет',
-  //     imageUrl: 'assets/images/blog/blog-2.png',
-  //     readTime: '7 мин',
-  //     date: '15.01.2024'
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Как бороться с конкуренцией на фрилансе?',
-  //     excerpt: 'Конкуренция — это часть нашей жизни. Мы боремся за место работы, за победу на конкурсе и даже за возможность купить последний круассан в любимом кафе. Фриланс не исключение.',
-  //     content: 'Полный текст статьи...',
-  //     category: 'Фриланс',
-  //     tag: 'Фриланс',
-  //     imageUrl: 'assets/images/blog/blog-3.png',
-  //     readTime: '6 мин',
-  //     date: '20.01.2024'
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'SMM-специалисты: кто они?',
-  //     excerpt: 'Профессия SММ-менеджера набирает все большую популярность. В эпоху интернета уже не только новости – приобретение товаров и услуг уходит в онлайн, а просмотр любимых сайтов становится ежедневной рутиной.',
-  //     content: 'Полный текст статьи...',
-  //     category: 'SMM',
-  //     tag: 'SMM',
-  //     imageUrl: 'assets/images/blog/blog-4.png',
-  //     readTime: '8 мин',
-  //     date: '25.01.2024'
-  //   }
-  // ];
 
   reviews: Review[] = [
     {
@@ -353,4 +276,5 @@ export class Main implements OnInit {
     console.log('Service selected:', service);
     this.openOrderModal(service.title);
   }
+
 }

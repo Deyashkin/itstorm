@@ -1,12 +1,5 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  inject,
-  SimpleChanges
-} from '@angular/core';
-import {ReactiveFormsModule, FormBuilder, Validators} from '@angular/forms';
+import { Component, EventEmitter, Input, Output, inject, SimpleChanges } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-modal-call-request',
@@ -15,13 +8,14 @@ import {ReactiveFormsModule, FormBuilder, Validators} from '@angular/forms';
   templateUrl: './modal-call-request.html',
   styleUrls: ['./modal-call-request.scss'],
 })
+
+
 export class ModalCallRequest {
   private fb = inject(FormBuilder);
 
   @Input() open = false;
   @Input() isSubmitting = false;
   @Input() stage: 'form' | 'success' = 'form';
-
 
   @Output() close = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<{ name: string; phone: string }>();
@@ -35,9 +29,7 @@ export class ModalCallRequest {
     this.close.emit();
   }
 
-  // чтобы при каждом открытии форма была чистая (по желанию)
   ngOnChanges(changes: SimpleChanges): void {
-    // сбрасываем только когда open поменялся с false -> true
     if (changes['open'] && this.open && changes['open'].previousValue === false) {
       this.callForm.reset();
     }

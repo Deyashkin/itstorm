@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, type Observable, throwError} from 'rxjs';
-import type {DefaultResponseType} from '../../../types/default-response.type';
-import type {LoginResponseType} from '../../../types/login-response.type';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import type {UserInfoType} from '../../../types/user-info.type';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, type Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import type { LoginResponseType } from '../../../types/login-response.type';
+import type { DefaultResponseType } from '../../../types/default-response.type';
+import type { UserInfoType } from '../../../types/user-info.type';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,6 @@ export class AuthService {
     if (hasToken && this.userId) {
       this.loadUserInfo(); // Загружаем информацию о пользователе
     }
-
   }
 
   login(email: string, password: string, rememberMe: boolean): Observable<DefaultResponseType | LoginResponseType> {
@@ -129,7 +128,7 @@ export class AuthService {
     }
   }
 
-  // Вспомогательный метод для получения userId из токена (если нужно)
+  // Вспомогательный метод для получения userId из токена
   private getUserIdFromToken(token: string): string {
     try {
       // Если токен JWT, можно декодировать его часть
@@ -139,5 +138,4 @@ export class AuthService {
       return '';
     }
   }
-
 }
