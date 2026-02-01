@@ -1,10 +1,11 @@
 import {
   Component,
-  Input,
-  Output,
-  EventEmitter,
   OnInit,
-  HostListener
+  HostListener,
+  input,
+  output,
+  signal,
+  computed  // Добавлен computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -18,90 +19,91 @@ import type { CategoryInterface } from '../../../../types/category.interface';
   styleUrls: ['./filter-dropdown.scss']
 })
 export class FilterDropdownComponent implements OnInit {
-  @Input() selectedCategories: string[] = []; // URL категорий
-  @Output() categoriesChange = new EventEmitter<string[]>(); // Эмитим URL
 
-  categories: CategoryInterface[] = [];
-  isLoading = false;
-  error: string | null = null;
-  isOpen = false;
+  public readonly selectedCategories = input<string[]>([]);
+  public readonly categoriesChange = output<string[]>();
 
-  constructor(private http: HttpClient) {}
+  protected readonly categories = signal<CategoryInterface[]>([]);
+  protected readonly isLoading = signal<boolean>(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly isOpen = signal<boolean>(false);
 
-  ngOnInit(): void {
+  constructor(private readonly http: HttpClient) {
+  }
+
+  public ngOnInit(): void {
     this.loadCategories();
   }
 
-  loadCategories(): void {
-    this.isLoading = true;
+  public loadCategories(): void {
+    this.isLoading.set(true);
     const apiUrl = 'http://localhost:3000/api/categories';
 
     this.http.get<CategoryInterface[]>(apiUrl).subscribe({
       next: (categories) => {
-        this.categories = categories;
-        this.isLoading = false;
+        this.categories.set(categories);          // Исправлено
+        this.isLoading.set(false);               // Исправлено
       },
       error: (err) => {
         console.error('Ошибка загрузки категорий:', err);
-        this.error = 'Не удалось загрузить категории';
-        this.isLoading = false;
+        this.error.set('Не удалось загрузить категории');  // Исправлено
+        this.isLoading.set(false);                         // Исправлено
       }
     });
   }
 
-  toggleDropdown(event?: MouseEvent): void {
-    // Если клик был по кнопке, просто переключаем
+  public toggleDropdown(event?: MouseEvent): void {
     if (event) {
-      event.stopPropagation(); // Останавливаем всплытие
+      event.stopPropagation();
     }
-    this.isOpen = !this.isOpen;
+    this.isOpen.update(isOpen => !isOpen);  // Исправлено
   }
 
-  // Закрываем dropdown при клике в любом месте документа
   @HostListener('document:click')
-  closeDropdown(): void {
-    this.isOpen = false;
+  protected closeDropdown(): void {
+    this.isOpen.set(false);  // Исправлено
   }
 
-  // Но не закрываем при клике внутри dropdown
   @HostListener('click', ['$event'])
-  onClick(event: MouseEvent): void {
-    event.stopPropagation(); // Останавливаем всплытие клика
+  protected onClick(event: MouseEvent): void {
+    event.stopPropagation();
   }
 
-  toggleCategory(categoryUrl: string, event?: MouseEvent): void {
+  public toggleCategory(categoryUrl: string, event?: MouseEvent): void {
     if (event) {
-      event.stopPropagation(); // Останавливаем всплытие
+      event.stopPropagation();
     }
 
-    const index = this.selectedCategories.indexOf(categoryUrl);
+    const currentCategories = this.selectedCategories();
+    const index = currentCategories.indexOf(categoryUrl);
     let newCategories: string[];
 
     if (index === -1) {
-      newCategories = [...this.selectedCategories, categoryUrl];
+      newCategories = [...currentCategories, categoryUrl];
     } else {
-      newCategories = this.selectedCategories.filter(c => c !== categoryUrl);
+      newCategories = currentCategories.filter(c => c !== categoryUrl);
     }
 
     this.categoriesChange.emit(newCategories);
   }
 
-  isSelected(categoryUrl: string): boolean {
-    return this.selectedCategories.includes(categoryUrl);
+  protected isSelected(categoryUrl: string): boolean {
+    return this.selectedCategories().includes(categoryUrl);
   }
 
-  getCategoryName(categoryUrl: string): string {
-    const category = this.categories.find(c => c.url === categoryUrl);
+  protected getCategoryName(categoryUrl: string): string {
+    const category = this.categories().find(c => c.url === categoryUrl);
     return category ? category.name : categoryUrl;
   }
 
-  getFilterButtonText(): string {
-    if (this.selectedCategories.length === 0) {
+  protected readonly filterButtonText = computed(() => {
+    const selected = this.selectedCategories();
+    if (selected.length === 0) {
       return 'Фильтр';
-    } else if (this.selectedCategories.length === 1) {
-      return this.getCategoryName(this.selectedCategories[0]);
+    } else if (selected.length === 1) {
+      return this.getCategoryName(selected[0]);
     } else {
-      return `Фильтр (${this.selectedCategories.length})`;
+      return `Фильтр (${selected.length})`;
     }
-  }
+  });
 }

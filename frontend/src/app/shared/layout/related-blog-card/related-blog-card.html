@@ -1,27 +1,23 @@
-<article class="related-card" (click)="navigateToArticle()">
+<article class="related-card">
   <div class="related-card-content">
 
     <div class="related-card-image">
-      <img [src]="getImageUrl()" [alt]="article.title">
+      <img [src]="getImageUrl()" [alt]="article().title">
       <span class="related-card-tag">{{ getCategoryName() }}</span>
     </div>
 
     <div class="related-card-body">
-      <h4 class="related-card-title">{{ article.title }}</h4>
+      <h4 class="related-card-title">{{ article().title }}</h4>
 
-      @if (article.description) {
+      @if (article().description) {
         <p class="related-card-description">
           {{ getShortDescription() }}
         </p>
       }
 
-      <div class="related-card-meta">
-        <span class="related-card-date">{{ getFormattedDate() }}</span>
-      </div>
-
-      <button class="related-card-link" (click)="navigateToArticle(); $event.stopPropagation()">
+      <a [routerLink]="['/blog', article().url]"  class="article-link">
         Читать дальше
-      </button>
+      </a>
     </div>
   </div>
 </article>

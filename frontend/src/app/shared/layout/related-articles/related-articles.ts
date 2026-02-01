@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  input,
+  signal,
+  effect
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { ArticleInterface } from '../../../../types/article.interface';
 import { ArticleService } from '../../services/article.service';
@@ -9,39 +16,42 @@ import { RelatedBlogCardComponent } from '../related-blog-card/related-blog-card
   standalone: true,
   imports: [CommonModule, RelatedBlogCardComponent],
   templateUrl: './related-articles.html',
-  styleUrls: ['./related-articles.scss']
+  styleUrls: ['./related-articles.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RelatedArticlesComponent implements OnInit {
-  @Input() articleUrl!: string;
+export class RelatedArticlesComponent {
 
-  private articleService = inject(ArticleService);
-  private cdr = inject(ChangeDetectorRef);
+  public readonly articleUrl = input.required<string>();
 
-  articles: ArticleInterface[] = [];
-  isLoading = false;
-  error: string | null = null;
+  private readonly articleService = inject(ArticleService);
 
-  ngOnInit() {
-    this.loadRelatedArticles();
+  public readonly articles = signal<ArticleInterface[]>([]);
+  public readonly isLoading = signal<boolean>(false);
+  public readonly error = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const url = this.articleUrl();
+      if (url) {
+        this.loadRelatedArticles(url);
+      }
+    }, { allowSignalWrites: true });
   }
 
-  loadRelatedArticles(): void {
-    this.isLoading = true;
-    this.error = null;
-    this.articles = [];
-    this.cdr.detectChanges();
+  private loadRelatedArticles(articleUrl: string): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.articles.set([]);
 
-    this.articleService.getRelatedArticles(this.articleUrl).subscribe({
+    this.articleService.getRelatedArticles(articleUrl).subscribe({
       next: (response) => {
-        this.articles = response;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.articles.set(response);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Ошибка загрузки связанных статей:', err);
-        this.error = 'Не удалось загрузить похожие статьи';
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.error.set('Не удалось загрузить похожие статьи');
+        this.isLoading.set(false);
       }
     });
   }

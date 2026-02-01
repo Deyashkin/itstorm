@@ -8,13 +8,13 @@ import { Subject } from 'rxjs';
 
 export class LoaderService {
 
-  isShowed$ = new Subject<boolean>();
+  public readonly isShowed$ = new Subject<boolean>();
 
-  show() {
+  public show() {
     this.isShowed$.next(true);
   }
 
-  hide() {
+  public hide() {
     this.isShowed$.next(false);
   }
 }

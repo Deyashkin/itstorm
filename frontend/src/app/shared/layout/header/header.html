@@ -13,11 +13,15 @@
     <div class="header-content">
       <nav>
         <ul>
-          <li><a routerLink="/" fragment="services" routerLinkActive="active">Услуги</a></li>
-          <li><a routerLink="/" fragment="about" routerLinkActive="active">О нас</a></li>
-          <li><a routerLink="/blog" routerLinkActive="active">Статьи</a></li>
-          <li><a routerLink="/" fragment="reviews" routerLinkActive="active">Отзывы</a></li>
-          <li><a routerLink="/" fragment="contacts" routerLinkActive="active">Контакты</a></li>
+          <li><a routerLink="/" fragment="services" >Услуги</a></li>
+          <li><a routerLink="/" fragment="about" >О нас</a></li>
+          <li><a
+            routerLink="/blog"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: false}"
+          >Статьи</a></li>
+          <li><a routerLink="/" fragment="reviews" >Отзывы</a></li>
+          <li><a routerLink="/" fragment="contacts" >Контакты</a></li>
         </ul>
       </nav>
 

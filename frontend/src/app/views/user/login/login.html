@@ -10,20 +10,34 @@
             id="email"
             type="text"
             class="input"
-            [ngStyle]="{'border-color': loginForm.get('email')?.invalid
-            && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched) ? 'red' : ''}"
+            [class.invalid]="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
             placeholder="Электронная почта"
             formControlName="email"
           />
+          @if (loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+            <div class="error-message">
+              @if (loginForm.get('email')?.errors?.['required']) {
+                Email обязателен
+              }
+              @if (loginForm.get('email')?.errors?.['email']) {
+                Введите корректный email
+              }
+            </div>
+          }
+
           <input
             id="password"
             type="password"
             class="input"
-            [ngStyle]="{'border-color': loginForm.get('password')?.invalid
-            && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched) ? 'red' : ''}"
+            [class.invalid]="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
             placeholder="Пароль"
             formControlName="password"
           />
+          @if (loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+            <div class="error-message">
+              Пароль обязателен
+            </div>
+          }
         </div>
         <div class="auth-checkbox">
           <input
@@ -36,13 +50,24 @@
       </div>
 
       <div class="auth-button">
-        <button class="button" [disabled]="loginForm.invalid" (click)="login()">Войти</button>
+        <button
+          class="button"
+          [disabled]="loginForm.invalid || isSubmitting()"
+          (click)="login()"
+        >
+          @if (isSubmitting()) {
+            Вход...
+          } @else {
+            Войти
+          }
+        </button>
       </div>
       <div class="auth-link">
         Нет аккаунта?
         <a routerLink="/signup">Пройдите регистрацию</a>
       </div>
     </div>
+
     <div class="page-image">
       <img
         src="/assets/images/page/login.png"

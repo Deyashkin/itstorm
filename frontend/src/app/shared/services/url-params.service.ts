@@ -1,59 +1,48 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 
-
 export class UrlParamsService {
+
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private location: Location
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {}
 
-  // Обновить URL с новыми параметрами
-  updateUrlParams(params: { [key: string]: any }): void {
-    console.log('updateUrlParams - входные параметры:', params);
-
+  public updateUrlParams(params: { [key: string]: any }): void {
     const currentUrl = this.router.parseUrl(this.router.url);
-    const queryParams = currentUrl.queryParams;
+    const queryParams = { ...currentUrl.queryParams };
 
-    console.log('updateUrlParams - текущие параметры URL:', queryParams);
-
-    // Обновляем параметры
     Object.keys(params).forEach(key => {
-      console.log(`updateUrlParams - обработка параметра ${key}:`, params[key]);
+      const value = params[key];
 
-      if (params[key] === null || params[key] === undefined || params[key] === '' ||
-        (Array.isArray(params[key]) && params[key].length === 0)) {
+      if (value === null || value === undefined || value === '' ||
+        (Array.isArray(value) && value.length === 0)) {
         delete queryParams[key];
-      } else if (Array.isArray(params[key])) {
-        queryParams[key] = params[key].join(',');
+      } else if (Array.isArray(value)) {
+        queryParams[key] = value;
       } else {
-        queryParams[key] = params[key].toString();
+        queryParams[key] = value.toString();
       }
     });
 
-    // Обновляем URL без перезагрузки страницы
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
-      queryParamsHandling: 'merge',
+      queryParamsHandling: '',
       replaceUrl: true
     });
   }
 
-  // Получить все параметры из URL
-  getAllParams(): Params {
+  public getAllParams(): Params {
     const params = this.route.snapshot.queryParams;
     return params;
   }
 
-  // Получить конкретный параметр
-  getParam(key: string): string | string[] | null {
+  public getParam(key: string): string | string[] | null {
     const params = this.getAllParams();
     const value = params[key];
 
@@ -63,33 +52,21 @@ export class UrlParamsService {
     return value || null;
   }
 
-  // Получить номер страницы
-  getPage(): number {
+  public getPage(): number {
     const page = this.getParam('page');
     const result = page ? parseInt(page as string, 10) : 1;
-    console.log(`getPage - номер страницы:`, result);
     return result;
   }
 
-  // Получить выбранные категории
-  getCategories(): string[] {
+  public getCategories(): string[] {
     const categories = this.getParam('categories');
     let result: string[] = [];
 
     if (Array.isArray(categories)) {
       result = categories;
     } else if (typeof categories === 'string' && categories.trim() !== '') {
-      // РАЗБИВАЕМ СТРОКУ ПО ЗАПЯТОЙ И УДАЛЯЕМ ПУСТЫЕ ЗНАЧЕНИЯ
       result = categories.split(',').filter(cat => cat.trim() !== '');
     }
-    return result;
-  }
-
-  // Получить сортировку
-  getSort(): string {
-    const sort = this.getParam('sort');
-    const result = (sort as string) || 'newest';
-    console.log(`getSort - сортировка:`, result);
     return result;
   }
 }

@@ -1,3 +1,7 @@
+:root {
+  --blue-accent-color: #709FDC;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -15,23 +19,31 @@ h2 {
   font-weight: 400;
   font-size: 38px;
   line-height: 130%;
-  color: #709fdc;
+  color: var(--blue-accent-color);
 }
+
+
 
 .button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background: #709fdc;
+  background: var(--blue-accent-color);
   color: #fff;
   cursor: pointer;
 
   font-weight: 500;
   line-height: 130%;
 
+  transition: background-color 0.2s ease;
+
   &:disabled {
-    background: gray;
+    background: #B9D5FD;
     cursor: not-allowed;
+  }
+
+  &:hover {
+    background: #709FDC;
   }
 }
 
@@ -39,7 +51,7 @@ h2 {
   box-sizing: border-box;
   padding: 20px 64px 20px 20px;
 
-  border: 1.50px solid #709fdc;
+  border: 1.50px solid var(--blue-accent-color);
   border-radius: 3px;
   font-size: 14px;
   line-height: 130%;

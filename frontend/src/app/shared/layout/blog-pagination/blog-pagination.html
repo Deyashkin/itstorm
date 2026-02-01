@@ -1,13 +1,11 @@
 <nav class="pagination" aria-label="Пагинация статей">
 
   <ul class="pagination-list">
-
-    <!-- Кнопка "Назад" -->
     <li class="pagination-item">
       <button
         type="button"
         class="pagination-button prev"
-        [disabled]="currentPage === 1"
+        [disabled]="currentPage() === 1"
         (click)="goToPrev()"
         aria-label="Предыдущая страница"
       >
@@ -18,16 +16,15 @@
     </li>
 
     <div class="pagination-numbers">
-      <!-- Номера страниц -->
-      @for (page of pages; track page) {
+      @for (page of pages(); track page) {
         <li class="pagination-item">
           <button
             type="button"
             class="pagination-button page-number"
-            [class.active]="page === currentPage"
+            [class.active]="page === currentPage()"
             (click)="goToPage(page)"
             aria-label="Страница {{ page }}"
-            [attr.aria-current]="page === currentPage ? 'page' : null"
+            [attr.aria-current]="page === currentPage() ? 'page' : null"
           >
             {{ page }}
           </button>
@@ -35,12 +32,11 @@
       }
     </div>
 
-    <!-- Кнопка "Вперед" -->
     <li class="pagination-item">
       <button
         type="button"
         class="pagination-button next"
-        [disabled]="currentPage === totalPages"
+        [disabled]="currentPage() === totalPages()"
         (click)="goToNext()"
         aria-label="Следующая страница"
       >
@@ -49,6 +45,5 @@
         </svg>
       </button>
     </li>
-
   </ul>
 </nav>

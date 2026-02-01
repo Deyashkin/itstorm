@@ -1,20 +1,25 @@
-@if (open) {
+@if (open()) {
   <div
     class="modal"
     role="dialog"
     aria-modal="true"
-    [attr.aria-label]="stage === 'form' ? 'Заявка на услугу' : 'Спасибо за заявку'"
+    [attr.aria-label]="stage() === 'form' ? 'Заявка на услугу' : 'Спасибо за заявку'"
     (click)="onBackdropClick()"
   >
     <div class="modal-card" (click)="$event.stopPropagation()">
-      <button class="modal-close" type="button" (click)="close.emit()" aria-label="Закрыть">
+      <button
+        class="modal-close"
+        type="button"
+        (click)="close.emit()"
+        aria-label="Закрыть"
+      >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <line x1="1.93562" y1="2.64999" x2="13.9564" y2="14.6708" stroke="#BEBEBE" stroke-linecap="round" />
           <line x1="13.9236" y1="2.62978" x2="1.90277" y2="14.6506" stroke="#BEBEBE" stroke-linecap="round" />
         </svg>
       </button>
 
-      @if (stage === 'form') {
+      @if (stage() === 'form') {
         <div class="modal-head">
           <div class="modal-title">Заявка на услугу</div>
         </div>
@@ -26,49 +31,54 @@
               formControlName="service"
               required
             >
-              @for (s of serviceOptions; track s) {
-                <option [value]="s">{{ s }}</option>
+              @for (service of serviceOptions(); track service) {
+                <option [value]="service">{{ service }}</option>
               }
             </select>
           </div>
 
           <label class="field">
-            <input class="input" type="text" formControlName="name" autocomplete="name" placeholder="Ваше имя"/>
-            @if (isTriedSubmit && form.get('name')?.invalid) {
+            <input
+              class="input"
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              placeholder="Ваше имя"
+              [class.invalid]="isFieldInvalid('name')"
+            />
+            @if (getFieldError('name'); as error) {
               <div class="error-message">
-                @if (form.get('name')?.errors?.['required']) {
-                  Имя обязательно
-                }
-                @if (form.get('name')?.errors?.['minlength']) {
-                  Минимум 2 символа
-                }
-                @if (form.get('name')?.errors?.['maxlength']) {
-                  Максимум 30 символов
-                }
+                {{ error }}
               </div>
             }
           </label>
 
           <label class="field">
-            <input class="input" type="tel" formControlName="phone" autocomplete="tel" placeholder="Ваш номер телефона"/>
-            @if (isTriedSubmit && form.get('phone')?.invalid) {
+            <input
+              class="input"
+              type="tel"
+              formControlName="phone"
+              autocomplete="tel"
+              placeholder="Ваш номер телефона"
+              [class.invalid]="isFieldInvalid('phone')"
+            />
+            @if (getFieldError('phone'); as error) {
               <div class="error-message">
-                @if (form.get('phone')?.errors?.['required']) {
-                  Телефон обязателен
-                }
-                @if (form.get('phone')?.errors?.['pattern']) {
-                  Введите корректный номер телефона
-                }
+                {{ error }}
               </div>
             }
           </label>
 
-          @if (isTriedSubmit && form.invalid) {
+          @if (isFormInvalid()) {
             <div class="form-error">Все поля должны быть заполнены</div>
           }
 
-          <button class="button" type="submit" [disabled]="isSubmitting || form.invalid">
-            @if (isSubmitting) {
+          <button
+            class="button"
+            type="submit"
+            [disabled]="isSubmitting() || form.invalid"
+          >
+            @if (isSubmitting()) {
               Отправка...
             } @else {
               Отправить
@@ -76,14 +86,14 @@
           </button>
         </form>
 
-        @if (error) {
+        @if (error(); as errorMessage) {
           <div class="form-error">
-            {{ error }}
+            {{ errorMessage }}
           </div>
         }
 
       } @else {
-        <div class="modal-head modal-head_center">
+        <div class="modal-head">
           <div class="modal-title modal-title_thanks">Спасибо за вашу заявку!</div>
         </div>
 

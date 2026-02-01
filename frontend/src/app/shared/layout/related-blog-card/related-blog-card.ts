@@ -1,34 +1,26 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import type { ArticleInterface } from '../../../../types/article.interface';
 
 @Component({
   selector: 'app-related-blog-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './related-blog-card.html',
   styleUrls: ['./related-blog-card.scss']
 })
-
-
 export class RelatedBlogCardComponent {
-  @Input() article!: ArticleInterface;
 
-  private router = inject(Router);
+  public readonly article = input.required<ArticleInterface>();
 
-  navigateToArticle(): void {
-    if (this.article?.url) {
-      this.router.navigate(['/blog', this.article.url]);
-    }
-  }
-
-  getImageUrl(): string {
-    if (!this.article?.image) {
+  public getImageUrl(): string {
+    const article = this.article();
+    if (!article?.image) {
       return 'assets/images/placeholder.jpg';
     }
 
-    const image = this.article.image;
+    const image = article.image;
     if (image.startsWith('http')) {
       return image;
     }
@@ -36,28 +28,28 @@ export class RelatedBlogCardComponent {
     return `assets/images/blog/${image}`;
   }
 
-  getCategoryName(): string {
-    if (!this.article?.category) return '';
+  public getCategoryName(): string {
+    const article = this.article();
+    if (!article?.category) return '';
 
-    if (typeof this.article.category === 'string') {
-      return this.article.category;
+    if (typeof article.category === 'string') {
+      return article.category;
     }
 
-    // Если это объект
-    if (typeof this.article.category === 'object') {
-      return (this.article.category as any).name ||
-        (this.article.category as any).category || '';
+    if (typeof article.category === 'object') {
+      return (article.category as any).name ||
+        (article.category as any).category || '';
     }
 
     return '';
   }
 
-  // Форматирование даты
-  getFormattedDate(): string {
-    if (!this.article?.date) return '';
+  public getFormattedDate(): string {
+    const article = this.article();
+    if (!article?.date) return '';
 
     try {
-      return new Date(this.article.date).toLocaleDateString('ru-RU', {
+      return new Date(article.date).toLocaleDateString('ru-RU', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
@@ -67,15 +59,15 @@ export class RelatedBlogCardComponent {
     }
   }
 
-  // Обрезание описания для sidebar
-  getShortDescription(): string {
-    if (!this.article?.description) return '';
+  public getShortDescription(): string {
+    const article = this.article();
+    if (!article?.description) return '';
 
     const maxLength = 80;
-    if (this.article.description.length <= maxLength) {
-      return this.article.description;
+    if (article.description.length <= maxLength) {
+      return article.description;
     }
 
-    return this.article.description.substring(0, maxLength) + '...';
+    return article.description.substring(0, maxLength) + '...';
   }
 }

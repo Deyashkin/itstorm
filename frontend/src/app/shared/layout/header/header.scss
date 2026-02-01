@@ -29,7 +29,6 @@ header.header {
         li a {
           cursor: pointer;
           text-decoration: none;
-//          font-weight: 500;
           font-size: 16px;
           line-height: 130%;
           color: #071739;
@@ -60,6 +59,7 @@ header.header {
         margin-left: 141px;
         text-decoration: none;
         column-gap: 7px;
+        cursor: pointer;
 
         line-height: 130%;
         color: var(--deep-text-color);

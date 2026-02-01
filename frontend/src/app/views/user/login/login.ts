@@ -1,7 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  type OnInit
+} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NgStyle} from '@angular/common';
 import {AuthService} from '../../../core/auth/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
@@ -11,20 +16,24 @@ import type {DefaultResponseType} from '../../../../types/default-response.type'
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, NgStyle, MatSnackBarModule],
+  imports: [RouterLink, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrl: './login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class Login {
+export class Login implements OnInit {
 
-  private _snackBar = inject(MatSnackBar);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
 
-  loginForm!: FormGroup;
+  public readonly isSubmitting = signal<boolean>(false);
+  public readonly loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder,
-              private authService: AuthService,
-              private router: Router,) {
+
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -32,50 +41,63 @@ export class Login {
     });
   }
 
-  login(): void {
-    if (this.loginForm.valid && this.loginForm.value.email && this.loginForm.value.password) {
-      this.authService.login(this.loginForm.value.email, this.loginForm.value.password, !!this.loginForm.value.rememberMe)
-        .subscribe({
-          next: (data: LoginResponseType | DefaultResponseType) => {
-            let error = null;
-            if ((data as DefaultResponseType).error !== undefined) {
-              error = (data as DefaultResponseType).message;
-            }
+  public ngOnInit(): void {}
 
-            const loginResponse = data as LoginResponseType
-            if (!(loginResponse).accessToken || !(loginResponse).refreshToken || !(loginResponse).userId) {
-              error = 'Ошибка авторизации';
-            }
 
-            if (error) {
-              this._snackBar.open(error);
-              throw new Error(error);
-            }
-
-            this.authService.setTokens(loginResponse.accessToken, loginResponse.refreshToken);
-            this.authService.userId = loginResponse.userId;
-
-            this.router.navigate(['/']).then(() => {
-              this.showSnack('Вы успешно авторизовались');
-            });
-
-          },
-          error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.error.message) {
-              this._snackBar.open(errorResponse.error.message);
-            } else {
-              this._snackBar.open('Ошибка авторизации');
-            }
-          }
-        })
+  public login(): void {
+    if (this.loginForm.invalid || !this.loginForm.value.email || !this.loginForm.value.password) {
+      return;
     }
+
+    this.isSubmitting.set(true);
+
+    const { email, password, rememberMe } = this.loginForm.value;
+
+    this.authService.login(email, password, !!rememberMe)
+      .subscribe({
+        next: (data: LoginResponseType | DefaultResponseType) => {
+          const error = this.getAuthError(data);
+
+          if (error) {
+            this.snackBar.open(error);
+            this.isSubmitting.set(false);
+            return;
+          }
+
+          const loginResponse = data as LoginResponseType;
+
+          this.authService.setTokens(loginResponse.accessToken, loginResponse.refreshToken);
+          this.authService.userId = loginResponse.userId;
+
+          this.router.navigate(['/']).then(() => {
+            this.showSnack('Вы успешно авторизовались');
+          });
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          const errorMessage = errorResponse.error?.message || 'Ошибка авторизации';
+          this.snackBar.open(errorMessage);
+          this.isSubmitting.set(false);
+        }
+      });
+  }
+
+  private getAuthError(data: LoginResponseType | DefaultResponseType): string | null {
+    if ((data as DefaultResponseType).error !== undefined) {
+      return (data as DefaultResponseType).message;
+    }
+
+    const loginResponse = data as LoginResponseType;
+    if (!loginResponse.accessToken || !loginResponse.refreshToken || !loginResponse.userId) {
+      return 'Ошибка авторизации';
+    }
+
+    return null;
   }
 
   private showSnack(message: string): void {
-    const ref = this._snackBar.open(message, 'ОК', { duration: 4000 });
+    const ref = this.snackBar.open(message, 'ОК', { duration: 4000 });
     const close = () => ref.dismiss();
 
-    // Клик/клавиши/колесо/тач — это "пользовательские" события и работают даже если скролл контейнерный
     setTimeout(() => {
       window.addEventListener('pointerdown', close, { once: true });
       window.addEventListener('keydown', close, { once: true });
@@ -83,8 +105,6 @@ export class Login {
       window.addEventListener('touchmove', close, { once: true, passive: true });
     }, 0);
 
-    // scroll нужен для случая "тащу полосу прокрутки мышкой".
-    // Ставим с небольшой задержкой, чтобы не закрывался сразу после navigate.
     setTimeout(() => {
       window.addEventListener('scroll', close, { once: true, passive: true, capture: true });
       document.addEventListener('scroll', close, { once: true, passive: true, capture: true });

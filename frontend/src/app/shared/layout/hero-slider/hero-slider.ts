@@ -1,17 +1,12 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Input} from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  input,
+  output
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import type { HeroSlideType } from '../../../../types/hero-slide.type';
 
-type HeroSlide = {
-  subtitle: string;
-  titleParts: Array<{
-    text: string;
-    isHighlighted: boolean;
-  }>;
-  fullTitle: string;
-  description?: string;
-  buttonText: string;
-  imageUrl: string;
-};
 
 @Component({
   selector: 'app-hero-slider',
@@ -22,8 +17,7 @@ type HeroSlide = {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 
-
 export class HeroSliderComponent {
-  @Input() slides: HeroSlide[] = [];
-  @Input() onOrderClick?: (serviceTitle?: string) => void;
+  public readonly slides = input<HeroSlideType[]>([]);
+  public readonly orderClick = output<string | undefined>();
 }

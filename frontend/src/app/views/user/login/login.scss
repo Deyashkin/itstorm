@@ -17,3 +17,17 @@
     }
   }
 }
+
+.input {
+  &.invalid {
+    border-color: #E25454 !important;
+  }
+}
+
+.error-message {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 130%;
+  color: #E25454;
+  text-align: left;
+}

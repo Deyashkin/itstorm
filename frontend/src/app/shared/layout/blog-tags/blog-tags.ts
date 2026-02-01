@@ -1,15 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
-  EventEmitter,
+  inject,
+  input,
+  output,
   type OnInit,
-  inject
+  signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { CategoryService } from '../../services/category.service';
-import type { CategoryInterface } from '../../../../types/category.interface';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {CategoryService} from '../../services/category.service';
+import type {CategoryInterface} from '../../../../types/category.interface';
 
 @Component({
   selector: 'app-blog-tags',
@@ -17,24 +18,25 @@ import type { CategoryInterface } from '../../../../types/category.interface';
   imports: [CommonModule, FormsModule],
   templateUrl: './blog-tags.html',
   styleUrl: './blog-tags.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogTagsComponent implements OnInit {
-  @Input() selectedCategories: string[] = [];
-  @Output() categoriesChange = new EventEmitter<string[]>();
+  public readonly selectedCategories = input<string[]>([]);
+  public readonly categoriesChange = output<string[]>();
 
-  categories: CategoryInterface[] = [];
+  private readonly categories = signal<CategoryInterface[]>([]);
 
-  private categoryService = inject(CategoryService);
+  private readonly categoryService = inject(CategoryService);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadCategories();
   }
 
-  loadCategories(): void {
+  private loadCategories(): void {
 
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
-        this.categories = categories;
+        this.categories.set(categories);
       },
       error: (err) => {
         console.error('Ошибка загрузки категорий в blog-tags:', err);
@@ -42,9 +44,9 @@ export class BlogTagsComponent implements OnInit {
     });
   }
 
-  getCategoryName(categoryUrl: string): string {
+  protected getCategoryName(categoryUrl: string): string {
     if (!categoryUrl) return '';
-    const category = this.categories.find(c => c.url === categoryUrl);
+    const category = this.categories().find(c => c.url === categoryUrl);
 
     if (category) {
       return category.name;
@@ -53,29 +55,12 @@ export class BlogTagsComponent implements OnInit {
     return categoryUrl;
   }
 
-  removeCategory(categoryUrl: string) {
-    const newCategories = this.selectedCategories.filter(c => c !== categoryUrl);
+  protected removeCategory(categoryUrl: string) {
+    const newCategories = this.selectedCategories().filter(c => c !== categoryUrl);
     this.categoriesChange.emit(newCategories);
   }
 
-  clearAll() {
+  public clearAll() {
     this.categoriesChange.emit([]);
-  }
-
-  toggleCategory(categoryUrl: string): void {
-    const index = this.selectedCategories.indexOf(categoryUrl);
-    let newCategories: string[];
-
-    if (index === -1) {
-      newCategories = [...this.selectedCategories, categoryUrl];
-    } else {
-      newCategories = this.selectedCategories.filter(c => c !== categoryUrl);
-    }
-
-    this.categoriesChange.emit(newCategories);
-  }
-
-  isSelected(categoryUrl: string): boolean {
-    return this.selectedCategories.includes(categoryUrl);
   }
 }

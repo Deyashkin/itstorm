@@ -1,49 +1,123 @@
-import { Component, EventEmitter, Input, Output, inject, SimpleChanges } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+  model,
+  computed,
+  signal,
+  effect,
+  inject
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  type FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+
+export type CallFormValue = {
+  name: string;
+  phone: string;
+};
+
+export type ModalStage = 'form' | 'success';
 
 @Component({
   selector: 'app-modal-call-request',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './modal-call-request.html',
-  styleUrls: ['./modal-call-request.scss'],
+  styleUrl: './modal-call-request.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
+export class ModalCallRequestComponent {
+  private readonly fb = inject(FormBuilder);
 
+  public readonly open = input<boolean>(false);
+  public readonly isSubmitting = input<boolean>(false);
+  public readonly stage = model<ModalStage>('form');
 
-export class ModalCallRequest {
-  private fb = inject(FormBuilder);
+  public readonly close = output<void>();
+  public readonly submitted = output<CallFormValue>();
 
-  @Input() open = false;
-  @Input() isSubmitting = false;
-  @Input() stage: 'form' | 'success' = 'form';
+  private readonly internalIsTriedSubmit = signal<boolean>(false);
+  public readonly isTriedSubmit = this.internalIsTriedSubmit.asReadonly();
 
-  @Output() close = new EventEmitter<void>();
-  @Output() submitted = new EventEmitter<{ name: string; phone: string }>();
-
-  callForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    phone: ['', [Validators.required, Validators.minLength(7)]],
+  public readonly isFormInvalid = computed<boolean>(() => {
+    return this.form.invalid && this.internalIsTriedSubmit();
   });
 
-  onBackdropClick() {
+  public readonly form: FormGroup = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+    phone: ['', [Validators.required, Validators.pattern(/^[\d\+\-\(\)\s]{7,20}$/)]],
+  });
+
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.internalIsTriedSubmit.set(false);
+
+        this.form.reset({
+          name: '',
+          phone: '',
+        });
+
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+      }
+    });
+  }
+
+  public onBackdropClick(): void {
     this.close.emit();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['open'] && this.open && changes['open'].previousValue === false) {
-      this.callForm.reset();
-    }
-  }
+  public submit(): void {
+    this.internalIsTriedSubmit.set(true);
 
-  submit(): void {
-    if (this.callForm.invalid) {
-      this.callForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
+    const formValue = this.form.getRawValue();
+
     this.submitted.emit({
-      name: this.callForm.value.name ?? '',
-      phone: this.callForm.value.phone ?? '',
+      name: formValue.name,
+      phone: formValue.phone,
     });
+  }
+
+  public getFieldError(fieldName: string): string | null {
+    const control = this.form.get(fieldName);
+
+    if (!control || !control.errors || !this.internalIsTriedSubmit()) {
+      return null;
+    }
+
+    if (control.errors['required']) {
+      return fieldName === 'name' ? 'Имя обязательно' : 'Телефон обязателен';
+    }
+
+    if (control.errors['minlength']) {
+      return fieldName === 'name' ? 'Минимум 2 символа' : 'Телефон слишком короткий';
+    }
+
+    if (control.errors['maxlength'] && fieldName === 'name') {
+      return 'Максимум 30 символов';
+    }
+
+    if (control.errors['pattern'] && fieldName === 'phone') {
+      return 'Введите корректный номер телефона';
+    }
+
+    return null;
+  }
+
+  public isFieldInvalid(fieldName: string): boolean {
+    const control = this.form.get(fieldName);
+    return !!(control?.invalid && this.internalIsTriedSubmit());
   }
 }

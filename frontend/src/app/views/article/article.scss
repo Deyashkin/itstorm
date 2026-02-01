@@ -36,21 +36,6 @@
 
   .article-header-content {
     .article-header {
-      .article-meta {
-        display: flex;
-        gap: 16px;
-        margin-bottom: 16px;
-        font-size: 14px;
-
-        .article-category {
-          color: #b9d5fd;
-          font-weight: 500;
-        }
-
-        .article-date {
-          color: #666;
-        }
-      }
 
       .article-title {
         margin: 0 0 20px 0;
@@ -114,26 +99,32 @@
       color: #333;
       margin-bottom: 40px;
 
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 40px;
-        margin-bottom: 20px;
-        font-weight: 600;
-        line-height: 1.3;
-        color: #709fdc;
+      ::ng-deep {
+        h1, h2, h3, h4, h5, h6 {
+          margin-bottom: 20px;
+          font-weight: 500;
+          line-height: 1.3;
+          color: #709fdc;
+        }
+
+        h1 { font-size: 32px; }
+        h2 { font-size: 28px; }
+        h3 { font-size: 20px;}
+        h4 { font-size: 20px; }
+
+        p {
+          margin-bottom: 40px;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 130%;
+          color: #071739;
+        }
       }
 
-      h1 { font-size: 32px; }
-      h2 { font-size: 28px; }
-      h3 { font-size: 24px; }
-      h4 { font-size: 20px; }
 
-      p {
-        margin-bottom: 24px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 16px;
-        line-height: 160%;
-        color: #333;
-      }
+
+
 
       img {
         max-width: 100%;

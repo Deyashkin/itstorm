@@ -14,19 +14,19 @@
       <nav>
         <ul>
           <li>
-            <a>Услуги</a>
+            <a routerLink="/" fragment="services" class="footer-link">Услуги</a>
           </li>
           <li>
-            <a>О нас</a>
+            <a routerLink="/" fragment="about" class="footer-link">О нас</a>
           </li>
           <li>
-            <a>Статьи</a>
+            <a routerLink="/blog" routerLinkActive="active" class="footer-link">Статьи</a>
           </li>
           <li>
-            <a>Отзывы</a>
+            <a routerLink="/" fragment="reviews" class="footer-link">Отзывы</a>
           </li>
           <li>
-            <a>Контакты</a>
+            <a routerLink="/" fragment="contacts" class="footer-link">Контакты</a>
           </li>
         </ul>
       </nav>
@@ -100,16 +100,14 @@
     </div>
     <div class="footer-bottom">
       <div class="footer-copyright">© 2022. Все права защищены</div>
-      <a routerLink="/terms" class="footer-terms">Пользовательское соглашение</a>
     </div>
   </div>
 
   <app-modal-call-request
-    [open]="isCallModalOpen"
-    [isSubmitting]="isSubmitting"
-    [stage]="callModalStage"
+    [open]="isCallModalOpen()"
+    [stage]="callModalStage()"
+    [isSubmitting]="isCallSubmitting()"
     (close)="closeCallModal()"
-    (submitted)="submitCallForm($event)"
+    (submitted)="submitCallRequest($event)"
   ></app-modal-call-request>
-
 </footer>

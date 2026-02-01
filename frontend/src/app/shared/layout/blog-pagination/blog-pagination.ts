@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  input, output, computed
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,52 +13,48 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './blog-pagination.html',
   styleUrl: './blog-pagination.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlogPaginationComponent {
-  @Input() currentPage: number = 1;
-  @Input() totalPages: number = 1;
-  @Input() totalItems: number = 0;
-  @Input() itemsPerPage: number = 8;
 
-  @Output() pageChange = new EventEmitter<number>();
+  public readonly currentPage = input<number>(1);
+  public readonly totalPages = input<number>(1);
+  public readonly totalItems = input<number>(0);
+  public readonly itemsPerPage = input<number>(8);
 
-  get pages(): number[] {
-    const pages = [];
+  public readonly pageChange = output<number>();
+
+  protected readonly pages = computed(() => {
+    const currentPage = this.currentPage();
+    const totalPages = this.totalPages();
     const maxVisible = 5;
 
-    let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
-    let end = Math.min(this.totalPages, start + maxVisible - 1);
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
 
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
 
+    const pages = [];
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
 
     return pages;
-  }
+  });
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+  protected goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
       this.pageChange.emit(page);
     }
   }
 
-  goToFirst() {
-    this.goToPage(1);
+  protected   goToPrev() {
+    this.goToPage(this.currentPage() - 1);
   }
 
-  goToLast() {
-    this.goToPage(this.totalPages);
-  }
-
-  goToPrev() {
-    this.goToPage(this.currentPage - 1);
-  }
-
-  goToNext() {
-    this.goToPage(this.currentPage + 1);
+  protected goToNext() {
+    this.goToPage(this.currentPage() + 1);
   }
 }

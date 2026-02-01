@@ -7,15 +7,17 @@
     <li class="breadcrumbs-item">
       <a routerLink="/blog" class="breadcrumbs-link">Блог</a>
     </li>
-    @if (getCategoryName()) {
+
+    @if (hasCategory()) {
       <li class="breadcrumbs-separator">/</li>
       <li class="breadcrumbs-item">
-        <span class="breadcrumbs-current">{{ getCategoryName() }}</span>
+        <span class="breadcrumbs-current">{{ categoryName() }}</span>
       </li>
     }
+
     <li class="breadcrumbs-separator">/</li>
     <li class="breadcrumbs-item">
-      <span class="breadcrumbs-current">{{ title }}</span>
+      <span class="breadcrumbs-current">{{ title() }}</span>
     </li>
   </ol>
 </nav>

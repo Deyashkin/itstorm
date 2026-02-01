@@ -16,4 +16,35 @@
       }
     }
   }
+
+  // Стили для ошибок
+  .auth-input {
+    .input {
+      transition: border-color 0.3s ease;
+
+      &.invalid {
+        border-color: #E25454 !important;
+        border-width: 2px !important;
+      }
+    }
+
+    .error-message {
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 130%;
+      color: #E25454;
+      text-align: left;
+      font-weight: 500;
+    }
+  }
+
+  .auth-checkbox {
+    .error-message {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 130%;
+      color: #E25454;
+      font-weight: 500;
+    }
+  }
 }

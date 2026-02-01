@@ -1,55 +1,59 @@
-import { Component, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy, signal,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ModalCallRequest } from '../../ui/modal/modal-call-request/modal-call-request';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { RouterLink } from '@angular/router';
+import {RouterLink, RouterLinkActive} from '@angular/router';
+import {
+  ModalCallRequestComponent,
+  type ModalStage
+} from '../../ui/modal/modal-call-request/modal-call-request';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    ModalCallRequest,
-    RouterLink
+    RouterLink,
+    RouterLinkActive,
+    ModalCallRequestComponent
   ],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 
 export class Footer {
 
-  private cdr = inject(ChangeDetectorRef);
-
-  isCallModalOpen = false;
-  isSubmitting = false;
-  callModalStage: 'form' | 'success' = 'form';
+  public readonly isCallModalOpen = signal(false);
+  public readonly callModalStage = signal<ModalStage>('form');
+  public readonly isCallSubmitting = signal(false);
 
   openCallModal(): void {
-    this.callModalStage = 'form';
-    this.isCallModalOpen = true;
+    this.isCallModalOpen.set(true);
+    this.callModalStage.set('form');
   }
 
   closeCallModal(): void {
-    this.isCallModalOpen = false;
-    this.callModalStage = 'form';
-    this.isSubmitting = false;
+    this.isCallModalOpen.set(false);
+    this.callModalStage.set('form');
+    this.isCallSubmitting.set(false);
   }
 
-  submitCallForm(data: { name: string; phone: string }): void {
-    this.isSubmitting = true;
-    this.cdr.detectChanges();
+  submitCallRequest(data: { name: string; phone: string }): void {
+    this.isCallSubmitting.set(true);
 
     of(true).pipe(delay(400)).subscribe({
       next: () => {
-        this.isSubmitting = false;
-        this.callModalStage = 'success';
-        this.cdr.detectChanges();
+        this.isCallSubmitting.set(false);
+        this.callModalStage.set('success');
         console.log('CALL REQUEST:', data);
       },
       error: () => {
-        this.isSubmitting = false;
-        this.cdr.detectChanges();
+        this.isCallSubmitting.set(false);
       }
     });
   }

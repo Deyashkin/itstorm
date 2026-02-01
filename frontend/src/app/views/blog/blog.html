@@ -5,28 +5,28 @@
 
       <div class="blog-tags">
         <app-blog-tags
-          [selectedCategories]="selectedCategories"
+          [selectedCategories]="selectedCategories()"
           (categoriesChange)="onCategorySelect($event)"
         ></app-blog-tags>
       </div>
 
       <div class="filter-dropdown-wrapper">
         <app-filter-dropdown
-          [selectedCategories]="selectedCategories"
+          [selectedCategories]="selectedCategories()"
           (categoriesChange)="onCategorySelect($event)"
         ></app-filter-dropdown>
       </div>
     </div>
 
     <app-article-list
-      [articles]="articles"
-      [isLoading]="isLoading"
-      [error]="error"
+      [articles]="articles()"
+      [isLoading]="isLoading()"
+      [error]="error()"
     ></app-article-list>
 
     <app-blog-pagination
-      [currentPage]="currentPage"
-      [totalPages]="totalPages"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
       (pageChange)="onPageChange($event)"
     ></app-blog-pagination>
   </div>

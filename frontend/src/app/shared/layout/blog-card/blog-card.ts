@@ -14,22 +14,7 @@ import type { ArticleInterface } from "../../../../types/article.interface";
 export class BlogCardComponent {
   @Input() article!: ArticleInterface;
 
-  get formattedDate(): string {
-    if (!this.article?.date) return '';
-
-    try {
-      return new Date(this.article.date).toLocaleDateString('ru-RU', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-    } catch {
-      return '';
-    }
-  }
-
-  get imageUrl(): string {
-    // Проверяем наличие article и image
+  protected get imageUrl(): string {
     if (!this.article || !this.article.image) {
       return 'assets/images/placeholder.jpg';
     }

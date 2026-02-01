@@ -1,8 +1,8 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { type HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { catchError, finalize, switchMap, throwError } from 'rxjs';
+import { AuthService } from './auth.service';
 import { LoaderService } from '../../shared/services/loader.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -35,12 +35,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 
-function handle401Error(
+const handle401Error = (
   req: Parameters<HttpInterceptorFn>[0],
   next: Parameters<HttpInterceptorFn>[1],
   authService: AuthService,
   router: Router
-) {
+) => {
   return authService.refresh().pipe(
     switchMap((result: any) => {
       let error = '';
@@ -71,4 +71,4 @@ function handle401Error(
       return throwError(() => error);
     })
   );
-}
+};

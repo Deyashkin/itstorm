@@ -1,93 +1,28 @@
 <section class="blog-section">
   <div class="container">
-    <h2 class="section-title">{{ title }}</h2>
+    <h2 class="section-title">{{ title() }}</h2>
 
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="loading">Загрузка статей...</div>
     }
 
-    @if (error) {
-      <div class="error">{{ error }}</div>
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
     }
 
-    @if (!isLoading && !error) {
+    @if (!isLoading() && !error()) {
     <div class="articles-grid">
-      @for (article of articles; track article.id) {
+      @for (article of articles(); track article.id) {
         <app-blog-card [article]="article"></app-blog-card>
       }
-
-      <!--    <article class="article-card">-->
-      <!--      <div class="article-content">-->
-      <!--      <div class="article-image">-->
-      <!--        <img src="../../../../assets/images/blog/blog-1.png" alt="Productivity">-->
-      <!--        <span class="article-tag">Фриланс</span>-->
-      <!--      </div>-->
-      <!--        <h3 class="article-title">6 сайтов для повышения продуктивности</h3>-->
-      <!--        <p class="article-description">-->
-      <!--          Хотите проводить время в сети с пользой? Наша подборка из шести полезных,-->
-      <!--          но малоизвестных сайтов увеличит вашу продуктивность, поможет успевать больше-->
-      <!--          в течение дня и всегда быть на шаг впереди!-->
-      <!--        </p>-->
-      <!--      </div>-->
-      <!--        <a href="#" class="article-link">Читать дальше</a>-->
-      <!--    </article>-->
-
-
-      <!--    <article class="article-card">-->
-      <!--      <div class="article-content">-->
-      <!--      <div class="article-image">-->
-      <!--        <img src="../../../../assets/images/blog/blog-2.png" alt="Client Meeting">-->
-      <!--        <span class="article-tag">Таргет</span>-->
-      <!--      </div>-->
-      <!--        <h3 class="article-title">Как произвести впечатление на нового клиента?</h3>-->
-      <!--        <p class="article-description">-->
-      <!--          Поиск новых клиентов — это сложная задача не только для новичков, но и для-->
-      <!--          опытных специалистов. Мы расскажем, как справиться с волнением, завоевать-->
-      <!--          доверие клиента и произвести на него потрясающее первое впечатление.-->
-      <!--        </p>-->
-      <!--      </div>-->
-      <!--        <a href="#" class="article-link">Читать дальше</a>-->
-      <!--    </article>-->
-
-      <!--    <article class="article-card">-->
-      <!--      <div class="article-content">-->
-      <!--      <div class="article-image">-->
-      <!--        <img src="../../../../assets/images/blog/blog-3.png" alt="Competition">-->
-      <!--        <span class="article-tag">Фриланс</span>-->
-      <!--      </div>-->
-      <!--        <h3 class="article-title">Как бороться с конкуренцией на фрилансе?</h3>-->
-      <!--        <p class="article-description">-->
-      <!--          Конкуренция — это часть нашей жизни. Мы боремся за место работы, за победу-->
-      <!--          на конкурсе и даже за возможность купить последний круассан в любимом кафе.-->
-      <!--          Фриланс не исключение.-->
-      <!--        </p>-->
-      <!--      </div>-->
-      <!--        <a href="#" class="article-link">Читать дальше</a>-->
-      <!--    </article>-->
-
-      <!--    <article class="article-card">-->
-      <!--      <div class="article-content">-->
-      <!--      <div class="article-image">-->
-      <!--        <img src="../../../../assets/images/blog/blog-4.png" alt="SMM">-->
-      <!--        <span class="article-tag">SMM</span>-->
-      <!--      </div>-->
-      <!--        <h3 class="article-title">SMM-специалисты: кто они?</h3>-->
-      <!--        <p class="article-description">-->
-      <!--          Профессия SММ-менеджера набирает все большую популярность. В эпоху интернета-->
-      <!--          уже не только новости – приобретение товаров и услуг уходит в онлайн,-->
-      <!--          а просмотр любимых сайтов становится ежедневной рутиной.-->
-      <!--        </p>-->
-      <!--      </div>-->
-      <!--        <a href="#" class="article-link">Читать дальше</a>-->
-      <!--    </article>-->
     </div>
     }
 
-    @if (!isLoading && !error && articles.length === 0) {
+    @if (!isLoading() && !error() && !hasArticles()) {
       <div class="no-articles">Статьи не найдены</div>
     }
 
-    @if (showLink && !isLoading && !error && articles && articles.length > 0) {
+    @if (showLink() && !isLoading() && !error() && articles() && !hasArticles()) {
       <a routerLink="/blog" class="blog-link">
         Перейти в блог
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

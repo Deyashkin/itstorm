@@ -1,6 +1,6 @@
 <app-hero-slider
   [slides]="heroSlides"
-  [onOrderClick]="openOrderModal.bind(this)"
+  (orderClick)="openOrderModal($event)"
 ></app-hero-slider>
 
 <section id="services">
@@ -15,9 +15,9 @@
 </section>
 
 <app-blog-section
-  [articles]="blogArticles"
-  [isLoading]="isLoadingArticles"
-  [error]="articlesError"
+  [articles]="blogArticles()"
+  [isLoading]="isLoadingArticles()"
+  [error]="articlesError()"
   title="Популярные статьи из блога"
   [showLink]="true"
 ></app-blog-section>
@@ -34,11 +34,12 @@
 </section>
 
 <app-modal-order
-  [open]="isOrderModalOpen"
-  [serviceTitle]="orderServiceTitle"
+  [open]="isModalOpen()"
+  [stage]="modalStage()"
+  [isSubmitting]="isSubmitting()"
+  [error]="errorMessage()"
   [services]="allServiceTitles"
-  [stage]="ModalStage"
-  [isSubmitting]="isSubmitting"
+  [serviceTitle]="selectedServiceTitle()"
   (close)="closeOrderModal()"
   (submitted)="submitOrder($event)"
 ></app-modal-order>

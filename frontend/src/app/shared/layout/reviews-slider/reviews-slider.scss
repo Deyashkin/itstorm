@@ -1,6 +1,7 @@
 .reviews {
   max-width: 1200px;
-  margin: 0 auto 120px auto;
+  margin: 0 auto;
+  padding-block: 60px;
 
   .reviews__title {
     font-size: 38px;
@@ -12,6 +13,43 @@
     position: relative;
     max-width: 1280px;
     margin: 0 auto;
+
+    .reviews__nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      width: 44px;
+      height: 44px;
+      border: none;
+      font-size: 44px;
+      line-height: 44px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+
+      &-icon {
+        width: 35px;
+        height: 35px;
+        background-color: #7aa0ff;
+        -webkit-mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+        mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+      }
+    }
+
+    .reviews__nav--next .reviews__nav-icon {
+      transform: scaleX(-1);
+    }
+
+    .reviews__nav--prev {
+      left: -60px;
+    }
+
+    .reviews__nav--next {
+      right: -60px;
+    }
 
     .review-card {
       border: 1px solid #7aa2e8;
@@ -43,57 +81,6 @@
   }
 }
 
-.reviews__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: transparent;
-  font-size: 44px;
-  line-height: 44px;
-  cursor: pointer;
-}
-
-.reviews__nav--prev { left: 10px; }
-
-.reviews__nav--next { right: 10px; }
 
 
 
-
-
-
-
-
-
-.reviews__nav {
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.reviews__nav-icon {
-  width: 35px;
-  height: 35px;
-  background-color: #7aa0ff; /* пример: можешь сделать другой цвет */
-  -webkit-mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
-  mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
-}
-
-.reviews__nav--next .reviews__nav-icon {
-  transform: scaleX(-1);
-}
-
-.reviews__nav--prev {
-  left: -60px;
-}
-
-.reviews__nav--next {
-  right: -60px;
-}

@@ -1,75 +1,93 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { ArticleService } from '../../shared/services/article.service';
 import type { ArticleInterface } from '../../../types/article.interface';
-import {
-  RelatedArticlesComponent
-} from '../../shared/layout/related-articles/related-articles';
-import {
-  BreadcrumbsComponent
-} from '../../shared/layout/breadcrumbs/breadcrumbs';
-import {CommentsComponent} from '../../shared/layout/comments/comments';
+import { RelatedArticlesComponent } from '../../shared/layout/related-articles/related-articles';
+import { BreadcrumbsComponent } from '../../shared/layout/breadcrumbs/breadcrumbs';
+import { CommentsComponent } from '../../shared/layout/comments/comments';
 
 @Component({
   selector: 'app-article',
   standalone: true,
-  imports: [CommonModule, RouterLink, BreadcrumbsComponent, RelatedArticlesComponent, CommentsComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    BreadcrumbsComponent,
+    RelatedArticlesComponent,
+    CommentsComponent
+  ],
   templateUrl: './article.html',
   styleUrl: './article.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Article implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private articleService = inject(ArticleService);
-  private sanitizer = inject(DomSanitizer);
-  private cdr = inject(ChangeDetectorRef);
 
-  article: ArticleInterface | null = null;
-  isLoading = false;
-  error: string | null = null;
-  articleContent: SafeHtml = '';
-  currentUrl: string = '';
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly articleService = inject(ArticleService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  ngOnInit(): void {
-    this.currentUrl = window.location.href;
+  public readonly article = signal<ArticleInterface | null>(null);
+  public readonly isLoading = signal<boolean>(false);
+  public readonly error = signal<string | null>(null);
+  public readonly articleContent = signal<SafeHtml>('');
+  public readonly currentUrl = signal<string>('');
+
+  public readonly hasArticle = computed<boolean>(() => {
+    return this.article() !== null;
+  });
+
+  public readonly shouldShowContent = computed<boolean>(() => {
+    return !this.isLoading() && !this.error() && this.hasArticle();
+  });
+
+  public readonly shouldShowNotFound = computed<boolean>(() => {
+    return !this.isLoading() && !this.error() && !this.hasArticle();
+  });
+
+  public ngOnInit(): void {
+    this.currentUrl.set(window.location.href);
     this.loadArticle();
   }
 
-  loadArticle(): void {
-    this.isLoading = true;
-    this.error = null;
-    this.article = null;
-    this.articleContent = '';
-    this.cdr.detectChanges();
-
+  public loadArticle(): void {
     const articleUrl = this.route.snapshot.paramMap.get('url');
 
     if (!articleUrl) {
-      this.error = 'Статья не найдена';
-      this.isLoading = false;
-      this.cdr.detectChanges();
+      this.error.set('Статья не найдена');
+      this.isLoading.set(false);
       return;
     }
 
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.article.set(null);
+    this.articleContent.set('');
+
     this.articleService.getArticleByUrl(articleUrl).subscribe({
       next: (article) => {
-        this.article = article;
-        this.articleContent = this.sanitizer.bypassSecurityTrustHtml(article.text || '');
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.article.set(article);
+        this.articleContent.set(this.sanitizer.bypassSecurityTrustHtml(article.text || ''));
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Ошибка загрузки статьи:', err);
-        this.error = 'Не удалось загрузить статью';
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.error.set('Не удалось загрузить статью');
+        this.isLoading.set(false);
       }
     });
   }
 
-  getFormattedDate(dateString: string): string {
+  public getFormattedDate(dateString: string): string {
     try {
       return new Date(dateString).toLocaleDateString('ru-RU', {
         day: 'numeric',
@@ -81,8 +99,10 @@ export class Article implements OnInit {
     }
   }
 
-  getImageUrl(image: string): string {
-    if (!image) return 'assets/images/placeholder.jpg';
+  public getImageUrl(image: string): string {
+    if (!image) {
+      return 'assets/images/placeholder.jpg';
+    }
 
     if (image.startsWith('http')) {
       return image;
@@ -91,30 +111,32 @@ export class Article implements OnInit {
     return `assets/images/blog/${image}`;
   }
 
-  shareOnVK(): void {
-    if (!this.article) return;
+  public shareOnVK(): void {
+    const currentArticle = this.article();
+    if (!currentArticle) {
+      return;
+    }
 
-    const url = encodeURIComponent(this.currentUrl);
-    const title = encodeURIComponent(this.article.title || '');
-    const description = encodeURIComponent(this.article.description || '');
-    const image = encodeURIComponent(this.article.image ? this.getImageUrl(this.article.image) : '');
+    const url = encodeURIComponent(this.currentUrl());
+    const title = encodeURIComponent(currentArticle.title || '');
+    const description = encodeURIComponent(currentArticle.description || '');
+    const image = encodeURIComponent(currentArticle.image ? this.getImageUrl(currentArticle.image) : '');
 
     const shareUrl = `https://vk.com/share.php?url=${url}&title=${title}&description=${description}&image=${image}`;
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
   }
 
-  shareOnFacebook(): void {
-    const url = encodeURIComponent(this.currentUrl);
+  public shareOnFacebook(): void {
+    const url = encodeURIComponent(this.currentUrl());
     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
   }
 
-  shareOnInstagram(): void {
-    // Instagram не имеет официального API для шаринга через URL
+  public shareOnInstagram(): void {
     alert('Для публикации в Instagram скопируйте ссылку на статью и добавьте в описание вашего поста.');
 
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(this.currentUrl)
+      navigator.clipboard.writeText(this.currentUrl())
         .then(() => {
           console.log('Ссылка скопирована в буфер обмена');
         })

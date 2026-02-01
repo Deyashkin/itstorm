@@ -1,13 +1,20 @@
-import {ChangeDetectorRef, Component, inject, OnInit, OnDestroy} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router'; // ДОБАВЬТЕ ЭТОТ ИМПОРТ
-import { Subscription } from 'rxjs'; // ДОБАВЬТЕ ЭТОТ ИМПОРТ
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, take } from 'rxjs';
 import { BlogPaginationComponent } from '../../shared/layout/blog-pagination/blog-pagination';
 import { BlogTagsComponent } from '../../shared/layout/blog-tags/blog-tags';
 import { ArticleListComponent } from '../../shared/layout/article-list/article-list';
-import { ArticleService } from '../../shared/services/article.service';
 import { FilterDropdownComponent } from '../../shared/layout/filter-dropdown/filter-dropdown';
+import { ArticleService } from '../../shared/services/article.service';
 import { UrlParamsService } from '../../shared/services/url-params.service';
 import type { ArticleInterface } from '../../../types/article.interface';
 
@@ -24,45 +31,40 @@ import type { ArticleInterface } from '../../../types/article.interface';
   ],
   templateUrl: './blog.html',
   styleUrl: './blog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class Blog implements OnInit, OnDestroy { // ДОБАВЬТЕ OnDestroy
+export class Blog implements OnInit, OnDestroy {
 
-  private articleService = inject(ArticleService);
-  private cdr = inject(ChangeDetectorRef);
-  private urlParamsService = inject(UrlParamsService);
-  private route = inject(ActivatedRoute); // ДОБАВЬТЕ ЭТО
+  private readonly articleService = inject(ArticleService);
+  private readonly urlParamsService = inject(UrlParamsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  private routeSub!: Subscription; // ДОБАВЬТЕ ЭТО
+  private routeSub!: Subscription;
 
-
-  articles: ArticleInterface[] = [];
-  isLoading = false;
-  error: string | null = null;
-
-  currentPage = 1;
-  totalPages = 1;
-  totalArticles = 0;
-
-  selectedCategories: string[] = [];
+  protected readonly articles = signal<ArticleInterface[]>([]);
+  protected readonly isLoading = signal<boolean>(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly currentPage = signal<number>(1);
+  protected readonly totalPages = signal<number>(1);
+  protected readonly totalArticles = signal<number>(0);
+  protected readonly selectedCategories = signal<string[]>([]);
 
   ngOnInit() {
-    console.log('Blog ngOnInit - загружаем параметры из URL');
 
-    // ПОДПИСЫВАЕМСЯ НА ИЗМЕНЕНИЯ QUERY ПАРАМЕТРОВ
-    this.routeSub = this.route.queryParams.subscribe(params => {
-      console.log('Query params изменились:', params);
+    this.route.queryParams.pipe(take(1)).subscribe(() => {
       this.loadParamsFromUrl();
       this.loadArticles();
     });
 
-    // ПЕРВОНАЧАЛЬНАЯ ЗАГРУЗКА
-    this.loadParamsFromUrl();
-    this.loadArticles();
+    this.routeSub = this.route.queryParams.subscribe(() => {
+      this.loadParamsFromUrl();
+      this.loadArticles();
+    });
   }
 
   ngOnDestroy() {
-    // ОЧИЩАЕМ ПОДПИСКУ
     if (this.routeSub) {
       this.routeSub.unsubscribe();
     }
@@ -72,57 +74,32 @@ export class Blog implements OnInit, OnDestroy { // ДОБАВЬТЕ OnDestroy
     const page = this.urlParamsService.getPage();
     const categories = this.urlParamsService.getCategories();
 
-    console.log('loadParamsFromUrl - получены параметры:', {
-      page,
-      categories,
-      categoriesLength: categories.length
-    });
-
-    this.currentPage = page;
-    this.selectedCategories = categories;
+    this.currentPage.set(page);
+    this.selectedCategories.set(categories);
   }
 
   private updateUrlParams(): void {
-    console.log('updateUrlParams - обновляем URL с параметрами:', {
-      page: this.currentPage,
-      categories: this.selectedCategories,
-      categoriesLength: this.selectedCategories.length,
-      shouldRemoveCategories: this.selectedCategories.length === 0
-    });
-
     this.urlParamsService.updateUrlParams({
-      page: this.currentPage > 1 ? this.currentPage : null,
-      categories: this.selectedCategories.length > 0 ? this.selectedCategories : null
+      page: this.currentPage() > 1 ? this.currentPage() : null,
+      categories: this.selectedCategories().length > 0 ? this.selectedCategories() : null
     });
   }
 
   clearAllFilters(): void {
-    console.log('clearAllFilters - очищаем все фильтры');
 
-    // ИСПОЛЬЗУЕМ ЯВНОЕ УДАЛЕНИЕ ПАРАМЕТРОВ
-    this.urlParamsService.updateUrlParams({
-      page: null,
-      categories: null
+    this.router.navigate(['/blog'], {
+      queryParams: {},
+      queryParamsHandling: ''
     });
 
-    // ОБНОВЛЯЕМ ЛОКАЛЬНЫЕ ПЕРЕМЕННЫЕ
-    this.currentPage = 1;
-    this.selectedCategories = [];
-
-    // ЗАГРУЖАЕМ СТАТЬИ
-    this.loadArticles();
+    this.currentPage.set(1);
+    this.selectedCategories.set([]);
   }
 
   onCategorySelect(categories: string[]): void {
-    console.log('onCategorySelect - выбраны категории:', {
-      categories,
-      categoriesLength: categories.length
-    });
+    this.selectedCategories.set(categories);
+    this.currentPage.set(1);
 
-    this.selectedCategories = categories;
-    this.currentPage = 1;
-
-    // ЕСЛИ КАТЕГОРИЙ НЕТ - ЯВНО УДАЛЯЕМ ПАРАМЕТР
     if (categories.length === 0) {
       this.urlParamsService.updateUrlParams({
         page: null,
@@ -136,54 +113,34 @@ export class Blog implements OnInit, OnDestroy { // ДОБАВЬТЕ OnDestroy
   }
 
   loadArticles(): void {
-    console.log('loadArticles - загружаем статьи с параметрами:', {
-      page: this.currentPage,
-      categories: this.selectedCategories,
-      categoriesLength: this.selectedCategories.length
-    });
 
-    this.isLoading = true;
-    this.error = null;
+    this.isLoading.set(true);
+    this.error.set(null);
 
-    this.articleService.getArticles(this.currentPage, this.selectedCategories)
+    this.articleService.getArticles(
+      this.currentPage(),
+      this.selectedCategories())
       .subscribe({
         next: (response) => {
           if (response && response.items) {
-            this.articles = response.items;
-            this.totalArticles = response.count;
-            this.totalPages = response.pages;
-
-            console.log('loadArticles - статьи загружены:', {
-              articlesCount: this.articles.length,
-              totalArticles: this.totalArticles,
-              totalPages: this.totalPages
-            });
-
+            this.articles.set(response.items);
+            this.totalArticles.set(response.count);
+            this.totalPages.set(response.pages);
           } else {
-            this.error = 'Нет данных для отображения';
+            this.error.set('Нет данных для отображения');
           }
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.isLoading.set(false);
         },
         error: (err) => {
-          console.error('loadArticles - ошибка:', err);
-          this.error = 'Ошибка при загрузке статей';
-          this.isLoading = false;
-          this.cdr.detectChanges();
+          this.error.set('Ошибка при загрузке статей');
+          this.isLoading.set(false);
         }
       });
   }
 
   onPageChange(page: number): void {
-    console.log('onPageChange - меняем страницу на:', page);
-    this.currentPage = page;
-    this.updateUrlParams();
+    this.currentPage.set(page);    this.updateUrlParams();
     this.loadArticles();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  onSortChange(sortBy: string) {
-    this.currentPage = 1;
-    this.loadArticles();
   }
 }

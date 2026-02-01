@@ -11,6 +11,13 @@
 
     .pagination-item {
 
+      button {
+        background: none;
+        outline: none;
+        border: none;
+        cursor: pointer;
+      }
+
       .pagination-button {
         font-family: 'Monserrat', sans-serif;
         border-radius: 122px;
@@ -52,17 +59,14 @@
 
       }
     }
+
+    .pagination-numbers {
+      display: flex;
+      column-gap: 20px;
+    }
   }
 }
 
-button {
-  background: none;
-  outline: none;
-  border: none;
-  cursor: pointer;
-}
 
-.pagination-numbers {
-  display: flex;
-  column-gap: 20px;
-}
+
+

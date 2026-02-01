@@ -30,19 +30,19 @@ export class AuthService {
     }
   }
 
-  login(email: string, password: string, rememberMe: boolean): Observable<DefaultResponseType | LoginResponseType> {
+  public login(email: string, password: string, rememberMe: boolean): Observable<DefaultResponseType | LoginResponseType> {
     return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'login', {
       email, password, rememberMe
     });
   }
 
-  signup(email: string, password: string,): Observable<DefaultResponseType | LoginResponseType> {
+  public signup(email: string, password: string,): Observable<DefaultResponseType | LoginResponseType> {
     return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'signup', {
       email, password
     });
   }
 
-  logout(): Observable<DefaultResponseType> {
+  public logout(): Observable<DefaultResponseType> {
     const tokens = this.getTokens();
     if (tokens && tokens.refreshToken) {
       return this.http.post<DefaultResponseType>(environment.api + 'logout', {
@@ -52,7 +52,7 @@ export class AuthService {
     throw throwError(() => 'Can not find token');
   }
 
-  refresh(): Observable<DefaultResponseType | LoginResponseType> {
+  public refresh(): Observable<DefaultResponseType | LoginResponseType> {
     const tokens = this.getTokens();
     if (tokens && tokens.refreshToken) {
       return this.http.post<DefaultResponseType>(environment.api + 'refresh', {
@@ -66,7 +66,7 @@ export class AuthService {
     return this.http.get<UserInfoType | DefaultResponseType>(environment.api + 'users');
   }
 
-  loadUserInfo(): void {
+  public loadUserInfo(): void {
     if (this.isLogged$.getValue()) {
       this.getUserInfo().subscribe({
         next: (data: UserInfoType | DefaultResponseType) => {

@@ -1,6 +1,21 @@
-import { ChangeDetectionStrategy,  Component, EventEmitter, Input, Output, inject, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+  model,
+  computed,
+  signal,
+  effect,
+  inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, type FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  type FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 
 export type OrderFormValue = {
   name: string;
@@ -18,107 +33,116 @@ export type ModalStage = 'form' | 'success';
   styleUrl: './modal-order.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+export class ModalOrderComponent {
+  private readonly fb = inject(FormBuilder);
 
+  public readonly open = input<boolean>(false);
+  public readonly isSubmitting = input<boolean>(false);
+  public readonly stage = model<ModalStage>('form');
+  public readonly error = input<string | null>(null);
+  public readonly services = input<string[]>([]);
+  public readonly serviceTitle = input<string | null>(null);
 
-export class ModalOrderComponent implements OnChanges {
-  private fb = inject(FormBuilder);
-  private _serviceTitle: string | null = null;
+  public readonly close = output<void>();
+  public readonly submitted = output<OrderFormValue>();
 
-  @Input() open = false;
-  @Input() isSubmitting = false;
-  @Input() stage: ModalStage = 'form';
-  @Input() error: string | null = null;
+  private readonly internalIsTriedSubmit = signal<boolean>(false);
+  public readonly isTriedSubmit = this.internalIsTriedSubmit.asReadonly();
 
-  @Input()
-  set serviceTitle(value: string | null) {
-    this._serviceTitle = value;
-    if (value) {
-      this.form.patchValue({ service: value });
+  public readonly serviceOptions = computed<string[]>(() => {
+    const base = this.services().slice();
+    const current = (this.serviceTitle() || '').trim();
+
+    if (current && !base.includes(current)) {
+      base.unshift(current);
     }
-  }
-
-  @Input() services: string[] = [];
-
-  get serviceOptions(): string[] {
-    const base = (this.services ?? []).slice();
-    const current = (this.serviceTitle || '').trim();
-
-    if (current && !base.includes(current)) base.unshift(current);
 
     return base;
-  }
+  });
 
-  isTriedSubmit = false;
+  public readonly isFormInvalid = computed<boolean>(() => {
+    return this.form.invalid && this.internalIsTriedSubmit();
+  });
 
-  get serviceTitle() {
-    return this._serviceTitle;
-  }
-
-  @Output() close = new EventEmitter<void>();
-  @Output() submitted = new EventEmitter<OrderFormValue>();
-
-  form: FormGroup = this.fb.group({
+  public readonly form: FormGroup = this.fb.group({
     service: ['', Validators.required],
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
     phone: ['', [Validators.required, Validators.pattern(/^[\d\+\-\(\)\s]{7,20}$/)]],
   });
 
-  ngOnChanges(changes: SimpleChanges) {
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.internalIsTriedSubmit.set(false);
 
-    if (changes['open'] && this.open) {
-      this.isTriedSubmit = false;
+        this.form.reset({
+          service: this.serviceTitle() ?? '',
+          name: '',
+          phone: '',
+        });
 
-      const currentService = this.serviceTitle || '';
-      this.form.reset({
-        service: this.serviceTitle ?? '',
-        name: '',
-        phone: '',
-      });
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+      }
+    });
 
-      this.form.markAsPristine();
-      this.form.markAsUntouched();
-
-      Object.keys(this.form.controls).forEach(key => {
-        const control = this.form.get(key);
-        if (control) {
-          control.updateValueAndValidity();
-        }
-      });
-    }
-
-    if (changes['serviceTitle']) {
-      const title = (this.serviceTitle || '').trim();
+    effect(() => {
+      const title = this.serviceTitle();
       if (title && this.form) {
         this.form.patchValue({ service: title }, { emitEvent: false });
       }
-    }
+    });
   }
 
-  onBackdropClick() {
+  public onBackdropClick(): void {
     this.close.emit();
   }
 
-  submit(): void {
-    this.isTriedSubmit = true;
+  public submit(): void {
+    this.internalIsTriedSubmit.set(true);
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-
-      Object.keys(this.form.controls).forEach(key => {
-        const control = this.form.get(key);
-        if (control?.invalid) {
-          console.log(`Field ${key} errors:`, control.errors);
-        }
-      });
       return;
     }
 
-    const v = this.form.getRawValue();
+    const formValue = this.form.getRawValue();
 
     this.submitted.emit({
-      service: v.service,
-      name: v.name,
-      phone: v.phone,
+      service: formValue.service,
+      name: formValue.name,
+      phone: formValue.phone,
     });
+  }
+
+  public getFieldError(fieldName: string): string | null {
+    const control = this.form.get(fieldName);
+
+    if (!control || !control.errors || !this.internalIsTriedSubmit()) {
+      return null;
+    }
+
+    if (control.errors['required']) {
+      return fieldName === 'name' ? 'Имя обязательно' : 'Телефон обязателен';
+    }
+
+    if (control.errors['minlength']) {
+      return 'Минимум 2 символа';
+    }
+
+    if (control.errors['maxlength']) {
+      return 'Максимум 30 символов';
+    }
+
+    if (control.errors['pattern']) {
+      return 'Введите корректный номер телефона';
+    }
+
+    return null;
+  }
+
+  public isFieldInvalid(fieldName: string): boolean {
+    const control = this.form.get(fieldName);
+    return !!(control?.invalid && this.internalIsTriedSubmit());
   }
 }

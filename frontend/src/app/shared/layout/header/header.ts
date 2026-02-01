@@ -1,13 +1,13 @@
 import { Component, inject, type OnDestroy, type OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import type { DefaultResponseType } from '../../../../types/default-response.type';
-import type { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import type { DefaultResponseType } from '../../../../types/default-response.type';
+import type { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -16,27 +16,25 @@ import { Subscription } from 'rxjs';
   imports: [
     AsyncPipe,
     RouterLink,
-    RouterLinkActive,
     MatMenuModule,
     MatButtonModule,
-    ],
+    RouterLinkActive,
+  ],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 
 
 export class Header implements OnInit, OnDestroy  {
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private _snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
   private subscription: Subscription = new Subscription();
 
-  public user$ = this.authService.user$;
-  public isLogged$ = this.authService.isLogged$;
+  public readonly user$ = this.authService.user$;
+  public readonly isLogged$ = this.authService.isLogged$;
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.authService.getIsLoggedIn() && this.authService.userId) {
       this.authService.loadUserInfo();
     }
@@ -49,16 +47,15 @@ export class Header implements OnInit, OnDestroy  {
     this.subscription.add(sub);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
   private showSnack(message: string): void {
-    const ref = this._snackBar.open(message, 'ОК', { duration: 4000 });
+    const ref = this.snackBar.open(message, 'ОК', { duration: 4000 });
 
     const close = () => ref.dismiss();
 
-    // Закрытие по клику/клавишам/скроллу колёсиком/тачем
     setTimeout(() => {
       window.addEventListener('pointerdown', close, { once: true });
       window.addEventListener('keydown', close, { once: true });
@@ -66,15 +63,13 @@ export class Header implements OnInit, OnDestroy  {
       window.addEventListener('touchmove', close, { once: true, passive: true });
     }, 0);
 
-    // Закрытие при перетаскивании полосы прокрутки мышью (scroll capture)
-    // Задержка нужна, чтобы не закрывалось сразу из-за navigate()
     setTimeout(() => {
       window.addEventListener('scroll', close, { once: true, passive: true, capture: true });
       document.addEventListener('scroll', close, { once: true, passive: true, capture: true });
     }, 200);
   }
 
-  logout(): void {
+  public logout(): void {
     this.authService.logout()
       .subscribe({
         next: (data: DefaultResponseType) => {
@@ -86,11 +81,10 @@ export class Header implements OnInit, OnDestroy  {
       })
   }
 
-  doLogout(): void {
+  public doLogout(): void {
     this.authService.removeTokens();
     this.authService.userId = null;
 
-    // Сначала навигация, потом snackbar (иначе "scroll" может закрыть его мгновенно)
     this.router.navigate(['/']).then(() => {
       this.showSnack('Вы вышли из системы');
     });

@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { type ServiceCardData, ServiceCardComponent } from '../service-card/service-card';
+import { ServiceCardComponent } from '../service-card/service-card';
+import { ServiceCardData } from '../../../../types/service-card-data.type';
 
 @Component({
   selector: 'app-services-section',
@@ -12,17 +13,17 @@ import { type ServiceCardData, ServiceCardComponent } from '../service-card/serv
 
 
 export class ServicesSectionComponent {
-  @Input() services: ServiceCardData[] = [];
-  @Input() title = 'Услуги, которые мы предлагаем';
-  @Input() columns: 2 | 3 | 4 = 3;
 
-  @Output() serviceSelected = new EventEmitter<ServiceCardData>();
+  public readonly services = input<ServiceCardData[]>([], { alias: 'services' });
+  public readonly title = input<string>('Услуги, которые мы предлагаем', { alias: 'title' });
+  public readonly columns = input<2 | 3 | 4>(3, { alias: 'columns' });
+  public readonly serviceSelected = output<ServiceCardData>();
 
-  get gridClass(): string {
-    return `services-grid services-grid--${this.columns}`;
-  }
+  public readonly gridClass = computed(() => {
+    return `services-grid services-grid--${this.columns()}`;
+  });
 
-  onServiceButtonClick(service: ServiceCardData) {
+  public onServiceButtonClick(service: ServiceCardData) {
     this.serviceSelected.emit(service);
   }
 }

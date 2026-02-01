@@ -10,11 +10,11 @@ import type { CategoryInterface } from '../../../types/category.interface';
 
 
 export class CategoryService {
-  private apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
-  getCategories(): Observable<CategoryInterface[]> {
+  public getCategories(): Observable<CategoryInterface[]> {
     const url = `${this.apiUrl}/categories`;
 
     return this.http.get<CategoryInterface[]>(url).pipe(

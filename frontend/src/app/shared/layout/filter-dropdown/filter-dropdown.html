@@ -2,25 +2,25 @@
   <button
     class="filter-dropdown-toggle"
     (click)="toggleDropdown()"
-    [class.open]="isOpen"
+    [class.open]="isOpen()"
   >
-    <span class="filter-text">{{ getFilterButtonText() }}</span>
+    <span class="filter-text">{{ filterButtonText() }}</span>
     <svg width="20" height="20" class="arrow-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10 14C9.41668 14 8.83335 13.775 8.39168 13.3334L2.95835 7.90003C2.71668 7.65837 2.71668 7.25837 2.95835 7.0167C3.20002 6.77503 3.60002 6.77503 3.84168 7.0167L9.27502 12.45C9.67502 12.85 10.325 12.85 10.725 12.45L16.1583 7.0167C16.4 6.77503 16.8 6.77503 17.0417 7.0167C17.2833 7.25837 17.2833 7.65837 17.0417 7.90003L11.6083 13.3334C11.1667 13.775 10.5833 14 10 14Z" fill="#071739" />
     </svg>
   </button>
 
-  @if (isOpen) {
+  @if (isOpen()) {
     <div class="filter-dropdown-menu">
-      @if (isLoading) {
+      @if (isLoading()) {
         <div class="loading">Загрузка...</div>
       }
-      @if (error) {
-        <div class="error">{{ error }}</div>
+      @if (error()) {
+        <div class="error">{{ error() }}</div>
       }
-      @if (!isLoading && !error) {
+      @if (!isLoading() && !error()) {
         <div class="categories-list">
-          @for (category of categories; track category.id) {
+          @for (category of categories(); track category.id) {
             <div
               class="category-item"
               [class.selected]="isSelected(category.url)"
@@ -29,12 +29,10 @@
             <span class="category-name">{{ category.name }}</span>
             <span class="category-icon">
                 @if (isSelected(category.url)) {
-                  <!-- Минус для выбранной категории -->
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <line x1="3" y1="8" x2="13" y2="8" stroke="#071739" stroke-width="2" stroke-linecap="round"/>
                   </svg>
                 } @else {
-                  <!-- Плюс для невыбранной категории -->
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <line x1="8" y1="3" x2="8" y2="13" stroke="#D9D9D9" stroke-width="2" stroke-linecap="round"/>
                     <line x1="3" y1="8" x2="13" y2="8" stroke="#D9D9D9" stroke-width="2" stroke-linecap="round"/>

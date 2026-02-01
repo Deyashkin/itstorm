@@ -1,17 +1,15 @@
 <div class="comments-section">
   <h3 class="comments-title">Комментарии к статье</h3>
 
-  <!-- Состояние когда нет комментариев -->
-  @if (!isLoading && comments.length === 0) {
+  @if (!isLoading() && comments().length === 0) {
     <div class="no-comments">
-      @if (isAuthenticated) {
+      @if (isAuthenticated()) {
         <p class="no-comments-subtitle">Будьте первым, кто оставит свой комментарий к статье!</p>
       }
     </div>
   }
 
-  <!-- Блок для незалогиненных пользователей -->
-  @if (!isAuthenticated) {
+  @if (!isAuthenticated()) {
     <div class="auth-prompt">
       <p>Чтобы оставлять комментарии,
         <a routerLink="/login" class="auth-link">войдите</a> или
@@ -20,22 +18,22 @@
     </div>
   }
 
-  <!-- Форма для залогиненных пользователей -->
-  @if (isAuthenticated) {
+  @if (isAuthenticated()) {
     <div class="comment-form">
       <textarea
-        [(ngModel)]="commentText"
+        [value]="commentText()"
+        (input)="onCommentTextChange($event)"
         placeholder="Напишите Ваш комментарий к статье..."
         class="comment-textarea"
         rows="4"
-        [disabled]="isPostingComment"
+        [disabled]="isPostingComment()"
       ></textarea>
       <button
         (click)="submitComment()"
         class="submit-button"
-        [disabled]="!commentText.trim() || isPostingComment"
+        [disabled]="!commentText().trim() || isPostingComment()"
       >
-        @if (isPostingComment) {
+        @if (isPostingComment()) {
           <span>Публикация...</span>
         } @else {
           <span>Опубликовать комментарий</span>
@@ -44,17 +42,15 @@
     </div>
   }
 
-  <!-- Состояние загрузки -->
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="comments-loading">
       <app-loader></app-loader>
     </div>
   }
 
-  <!-- Список комментариев -->
-  @if (!isLoading && comments.length > 0) {
+  @if (!isLoading() && comments().length > 0) {
     <div class="comments-list">
-      @for (comment of comments; track comment.id) {
+      @for (comment of comments(); track comment.id) {
         <div class="comment-item">
           <div class="comment-header">
             <img [src]="getUserAvatar(comment)" alt="Avatar" class="comment-avatar">
@@ -69,7 +65,7 @@
           </div>
 
           <div class="comment-actions">
-            @if (isAuthenticated) {
+            @if (isAuthenticated()) {
               <button
                 (click)="likeComment(comment.id)"
                 class="action-button like-button"
@@ -149,10 +145,9 @@
       }
     </div>
 
-    <!-- Кнопка загрузить еще -->
-    @if (hasMoreComments) {
+    @if (hasMoreComments()) {
       <div class="load-more-section">
-        @if (loadMoreLoading) {
+        @if (loadMoreLoading()) {
           <app-loader></app-loader>
         } @else {
           <button

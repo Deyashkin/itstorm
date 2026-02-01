@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -10,21 +10,27 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./breadcrumbs.scss']
 })
 export class BreadcrumbsComponent {
-  @Input() category: any;
-  @Input() title: string = '';
 
-  // Метод для получения строкового названия категории
-  getCategoryName(): string {
-    if (!this.category) return '';
+  public readonly category = input<any>(null);
+  public readonly title = input<string>('');
 
-    if (typeof this.category === 'string') {
-      return this.category;
+  public readonly categoryName = computed(() => {
+    const cat = this.category();
+
+    if (!cat) return '';
+
+    if (typeof cat === 'string') {
+      return cat;
     }
 
-    // Если это объект с полями name или category
-    if (typeof this.category === 'object') {
-      return this.category.name || this.category.category || '';
+    if (typeof cat === 'object' && cat !== null) {
+      return cat.name || cat.category || '';
     }
+
     return '';
-  }
+  });
+
+  public readonly hasCategory = computed(() => {
+    return this.categoryName().length > 0;
+  });
 }

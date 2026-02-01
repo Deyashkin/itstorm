@@ -10,16 +10,16 @@ import { catchError } from 'rxjs/operators';
 
 
 export class CommentService {
-  private apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error);
     throw error;
   }
 
-  getComments(articleId: string, offset: number = 0, limit: number = 3): Observable<CommentsResponseInterface> {
+  public getComments(articleId: string, offset: number = 0, limit: number = 3): Observable<CommentsResponseInterface> {
     const params = new HttpParams()
       .set('article', articleId)
       .set('offset', offset.toString())
@@ -28,31 +28,31 @@ export class CommentService {
     return this.http.get<CommentsResponseInterface>(`${this.apiUrl}/comments`, { params });
   }
 
-  createComment(articleId: string, text: string): Observable<CommentInterface> {
+  public createComment(articleId: string, text: string): Observable<CommentInterface> {
     return this.http.post<CommentInterface>(`${this.apiUrl}/comments`, {
       article: articleId,
       text
     });
   }
 
-  likeComment(commentId: string): Observable<any> {
+  public likeComment(commentId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/comments/${commentId}/apply-action`, {
       action: 'like'
     });
   }
 
-  dislikeComment(commentId: string): Observable<any> {
+  public dislikeComment(commentId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/comments/${commentId}/apply-action`, {
       action: 'dislike'
     });
   }
 
-  getArticleCommentActions(articleId: string): Observable<any> {
+  public getArticleCommentActions(articleId: string): Observable<any> {
     const params = new HttpParams().set('articleId', articleId);
     return this.http.get(`${this.apiUrl}/comments/article-comment-actions`, { params });
   }
 
-  reportComment(commentId: string): Observable<any> {
+  public reportComment(commentId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/comments/${commentId}/apply-action`, {
       action: 'violate'
     }).pipe(

@@ -10,11 +10,9 @@
         {{ article.description }}
       </p>
     }
-    <div class="article-meta">
-      <span class="article-date">{{ formattedDate }}</span>
-    </div>
+    <a [routerLink]="['/blog', article.url]" class="article-link">
+      Читать дальше
+    </a>
   </div>
-  <a [routerLink]="['/blog', article.url]" class="article-link">
-    Читать дальше
-  </a>
+
 </article>

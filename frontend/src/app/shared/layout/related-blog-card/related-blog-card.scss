@@ -1,31 +1,21 @@
 .related-card {
-  cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-    border-color: #709fdc;
-
-    .related-card-image img {
-      transform: scale(1.05);
-    }
-
-    .related-card-title {
-      color: #5a8bd6;
-    }
-
-    .related-card-link {
-      background: #709fdc;
-      color: white;
-    }
-  }
 
   &-content {
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition: transform 0.3s ease;
+
+
+    &:hover {
+      transform: translateY(-4px);
+
+      .article-image img {
+        transform: scale(1.02);
+      }
+    }
   }
 
   &-image {
@@ -79,7 +69,8 @@
   }
 
   &-description {
-    margin: 0 0 15px 0;
+    margin-top: 0;
+    margin-bottom: 40px;
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -92,32 +83,19 @@
     overflow: hidden;
   }
 
-  &-meta {
-    margin-bottom: 38px;
-    font-size: 14px;
-  }
-
-  &-link {
+  .article-link {
     align-self: flex-start;
     background: transparent;
     border: none;
     padding: 0;
-    border-bottom: 1px solid #709fdc;
     color: #709fdc;
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 400;
     cursor: pointer;
     transition: all 0.2s;
-
-    &:hover {
-      background: #709fdc;
-      color: white;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
+    text-decoration: none;
+    border-bottom: 1px solid #709fdc;
   }
 }
 

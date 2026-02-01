@@ -20,7 +20,7 @@
       autoplay-delay="50000"
       autoplay-disable-on-interaction="false"
     >
-      @for (s of slides; track $index) {
+      @for (s of slides(); track $index) {
         <swiper-slide>
           <div class="hero-slide">
             <div class="hero-slide__left">
@@ -44,7 +44,7 @@
                 }
 
                 <button class="button hero-slide__button" type="button"
-                        (click)="onOrderClick ? onOrderClick(s.fullTitle) : null">
+                        (click)="orderClick.emit(s.serviceTitle)">
                   {{ s.buttonText }}
                 </button>
               </div>

@@ -1,9 +1,9 @@
 <section class="services-section">
   <div class="services-container">
-    <h2 class="services-title">{{ title }}</h2>
+    <h2 class="services-title">{{ title() }}</h2>
 
-    <div [class]="gridClass">
-      @for (service of services; track service.id) {
+    <div [class]="gridClass()">
+      @for (service of services(); track service.id) {
         <app-service-card
           [service]="service"
           (buttonClick)="onServiceButtonClick(service)"

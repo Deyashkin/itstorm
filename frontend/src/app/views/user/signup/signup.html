@@ -1,4 +1,4 @@
-<section class="signup" [formGroup]="signupForm" PasswordRepeat>
+<section class="signup" [formGroup]="signupForm" appPasswordRepeat>
   <div class="container">
     <div class="auth-form">
       <div class="auth-title">
@@ -9,27 +9,59 @@
           <input
             type="text"
             class="input"
-            [ngStyle]="{'border-color': signupForm.get('email')?.invalid
-            && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched) ? 'red' : ''}"
+            [class.invalid]="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)"
             placeholder="Электронная почта"
             formControlName="email"
           />
+          @if (signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)) {
+            <div class="error-message">
+              @if (signupForm.get('email')?.errors?.['required']) {
+                Email обязателен
+              }
+              @if (signupForm.get('email')?.errors?.['email']) {
+                Введите корректный email
+              }
+            </div>
+          }
+
           <input
             type="password"
             class="input"
-            [ngStyle]="{'border-color': signupForm.get('password')?.invalid
-            && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched) ? 'red' : ''}"
+            [class.invalid]="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)"
             placeholder="Пароль"
             formControlName="password"
           />
+          @if (signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)) {
+            <div class="error-message">
+              @if (signupForm.get('password')?.errors?.['required']) {
+                Пароль обязателен
+              }
+              @if (signupForm.get('password')?.errors?.['pattern']) {
+                Пароль должен содержать минимум 8 символов, включая цифры, строчные и заглавные буквы
+              }
+            </div>
+          }
+
           <input
             type="password"
             class="input"
-            [ngStyle]="{'border-color': signupForm.get('passwordRepeat')?.invalid
-            && (signupForm.get('passwordRepeat')?.dirty || signupForm.get('passwordRepeat')?.touched) ? 'red' : ''}"
+            [class.invalid]="signupForm.get('passwordRepeat')?.invalid && (signupForm.get('passwordRepeat')?.dirty || signupForm.get('passwordRepeat')?.touched)"
             placeholder="Повторите пароль"
             formControlName="passwordRepeat"
           />
+          @if (signupForm.get('passwordRepeat')?.invalid && (signupForm.get('passwordRepeat')?.dirty || signupForm.get('passwordRepeat')?.touched)) {
+            <div class="error-message">
+              @if (signupForm.get('passwordRepeat')?.errors?.['required']) {
+                Повтор пароля обязателен
+              }
+              @if (signupForm.get('passwordRepeat')?.errors?.['pattern']) {
+                Пароль должен содержать минимум 8 символов, включая цифры, строчные и заглавные буквы
+              }
+              @if (signupForm.get('passwordRepeat')?.errors?.['passwordMismatch']) {
+                Пароли должны совпадать
+              }
+            </div>
+          }
         </div>
         <div class="auth-checkbox">
           <input
@@ -41,11 +73,26 @@
             <a href="#">условия пользовательского соглашения</a> и даю
             <a href="">согласие на обработку персональных данных</a>.
           </label>
+          @if (signupForm.get('agree')?.invalid && signupForm.get('agree')?.touched) {
+            <div class="error-message">
+              Необходимо принять условия
+            </div>
+          }
         </div>
       </div>
 
       <div class="auth-button">
-        <button class="button" [disabled]="signupForm.invalid" (click)="signup()">Зарегистрироваться</button>
+        <button
+          class="button"
+          [disabled]="signupForm.invalid || isSubmitting()"
+          (click)="signup()"
+        >
+          @if (isSubmitting()) {
+            Регистрация...
+          } @else {
+            Зарегистрироваться
+          }
+        </button>
       </div>
       <div class="auth-link">
         Уже есть аккаунт?<a routerLink="/login">Войдите</a>

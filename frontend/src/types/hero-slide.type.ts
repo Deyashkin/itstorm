@@ -1,8 +1,12 @@
-export interface HeroSlideType {
-  title: string;
-  discount: string;
+export type HeroSlideType = {
   subtitle: string;
+  titleParts: Array<{
+    text: string;
+    isHighlighted: boolean;
+  }>;
+  fullTitle: string;
+  description?: string;
   buttonText: string;
-  service: string;
-  image: string;
-}
+  imageUrl: string;
+  serviceTitle?: string;
+};

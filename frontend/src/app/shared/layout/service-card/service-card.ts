@@ -1,16 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-export type ServiceCardData = {
-  id: number;
-  title: string;
-  description: string;
-  price?: string;
-  priceNote?: string;
-  buttonText: string;
-  imageUrl?: string;
-  isPopular?: boolean;
-  features?: string[];
-};
+import {
+  Component,
+  input,
+  output,
+} from '@angular/core';
+import type {ServiceCardData} from '../../../../types/service-card-data.type';
 
 @Component({
   selector: 'app-service-card',
@@ -22,12 +15,12 @@ export type ServiceCardData = {
 
 
 export class ServiceCardComponent {
-  @Input() service!: ServiceCardData;
-  @Input() variant: 'default' | 'compact' = 'default';
 
-  @Output() buttonClick = new EventEmitter<ServiceCardData>();
+  public readonly service = input.required<ServiceCardData>();
+  public readonly variant = input<'default' | 'compact'>('default');
+  public readonly buttonClick = output<ServiceCardData>();
 
-  onButtonClick() {
-    this.buttonClick.emit(this.service);
+  public onButtonClick() {
+    this.buttonClick.emit(this.service());
   }
 }

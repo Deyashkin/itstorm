@@ -13,8 +13,7 @@ export class App implements OnInit {
   protected readonly title = signal('itstorm');
   private authService = inject(AuthService);
 
-  ngOnInit(): void {
-    // Принудительная загрузка информации о пользователе при старте приложения
+  public ngOnInit(): void {
     if (this.authService.getIsLoggedIn()) {
       this.authService.loadUserInfo();
     }

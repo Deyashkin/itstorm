@@ -1,7 +1,55 @@
 .hero__wrap {
   position: relative;
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: 1240px;
+  margin: 0 auto 60px auto;
+
+
+  .hero__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    border: none;
+    font-size: 44px;
+    line-height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .hero__nav--prev {
+    left: 10px;
+  }
+
+  .hero__nav--next {
+    right: 10px;
+  }
+
+  .hero__nav-icon {
+    width: 35px;
+    height: 35px;
+
+    background-color: #fff;
+
+    -webkit-mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+    mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
+  }
+
+  .hero__nav--next .hero__nav-icon {
+    transform: scaleX(-1);
+  }
+
+  .hero__nav:hover .hero__nav-icon {
+    opacity: 0.8;
+  }
+  .hero__nav:active .hero__nav-icon {
+    opacity: 0.6;
+  }
 
   .hero-slide {
     display: grid;
@@ -93,32 +141,9 @@
   }
 }
 
-.hero__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: transparent;
-  font-size: 44px;
-  line-height: 44px;
-  cursor: pointer;
-}
-
-.hero__nav--prev {
-  left: 10px;
-}
-
-.hero__nav--next {
-  right: 10px;
-}
-
 .hero__swiper {
-  /* точки */
-  --swiper-pagination-color: #fff; /* активная */
-  --swiper-pagination-bullet-inactive-color: #ffffff; /* неактивные */
+  --swiper-pagination-color: #fff;
+  --swiper-pagination-bullet-inactive-color: #ffffff;
   --swiper-pagination-bullet-inactive-opacity: 0.5;
   --swiper-pagination-bullet-size: 10px;
   --swiper-pagination-bullet-horizontal-gap: 10px;
@@ -126,7 +151,6 @@
   --swiper-navigation-color: #071739;
 }
 
-/* Неактивные буллеты: только обводка 1px, без заливки */
 .hero__swiper::part(bullet) {
   width: var(--swiper-pagination-bullet-size);
   height: var(--swiper-pagination-bullet-size);
@@ -136,44 +160,7 @@
   box-sizing: border-box;
 }
 
-/* Активный буллет: заливка белая */
 .hero__swiper::part(bullet-active) {
   background: #fff;
   border-color: #fff;
-}
-
-/* ===== HERO ARROWS (SVG MASK) ===== */
-.hero__nav {
-  /* у тебя позиционирование уже есть — оставь как есть */
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.hero__nav-icon {
-  width: 35px;
-  height: 35px;
-
-  /* цвет иконки */
-  background-color: #fff;
-
-  /* сама “форма” иконки берётся из SVG */
-  -webkit-mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
-  mask: url("/assets/icons/arrow-left.svg") no-repeat center / contain;
-}
-
-/* Правую стрелку делаем зеркальной, чтобы не хранить второй svg */
-.hero__nav--next .hero__nav-icon {
-  transform: scaleX(-1);
-}
-
-/* Hover/active (по желанию) */
-.hero__nav:hover .hero__nav-icon {
-  opacity: 0.8;
-}
-.hero__nav:active .hero__nav-icon {
-  opacity: 0.6;
 }

@@ -1,14 +1,15 @@
 <aside class="related-articles">
   <h3 class="related-title">Читайте также</h3>
-  @if (isLoading) {
+
+  @if (isLoading()) {
     <div class="loading">Загрузка...</div>
-  } @else if (error) {
-    <div class="error">{{ error }}</div>
-  } @else if (articles.length === 0) {
+  } @else if (error()) {
+    <div class="error">{{ error() }}</div>
+  } @else if (articles().length === 0) {
     <div class="no-articles">Похожих статей нет</div>
   } @else {
     <div class="related-list">
-      @for (article of articles; track article.id) {
+      @for (article of articles(); track article.id) {
         <app-related-blog-card [article]="article" class="related-item"></app-related-blog-card>
       }
     </div>

@@ -1,8 +1,8 @@
 <div class="tags-container">
-  @if (selectedCategories.length > 0) {
+  @if (selectedCategories().length > 0) {
     <div class="selected-tags">
       <div class="selected-tags-list">
-        @for (categoryUrl of selectedCategories; track categoryUrl) {
+        @for (categoryUrl of selectedCategories(); track categoryUrl) {
           @let categoryName = getCategoryName(categoryUrl);
           <div class="selected-tag">
             <span class="selected-tag__text">{{ categoryName }}</span>

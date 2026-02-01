@@ -1,11 +1,6 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-type Review = {
-  name: string;
-  text: string;
-  avatarUrl: string;
-};
+import type {ReviewType} from '../../../../types/review.type';
 
 @Component({
   selector: 'app-reviews-slider',
@@ -17,6 +12,6 @@ type Review = {
 })
 
 export class ReviewsSliderComponent {
-  @Input() reviews: Review[] = [];
-  @Input() title: string = 'Отзывы о нашей работе';
+  public readonly reviews = input<ReviewType[]>([], { alias: 'reviews' });
+  public readonly title = input<string>('Отзывы о нашей работе', { alias: 'title' });
 }

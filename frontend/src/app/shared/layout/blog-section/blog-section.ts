@@ -1,4 +1,4 @@
-import { Component, Input, type OnInit } from '@angular/core';
+import {Component, computed, input} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BlogCardComponent } from '../blog-card/blog-card';
 import { CommonModule } from '@angular/common';
@@ -17,9 +17,11 @@ import type { ArticleInterface } from '../../../../types/article.interface';
 })
 
 export class BlogSectionComponent {
-  @Input() articles: ArticleInterface[] = [];
-  @Input() isLoading: boolean = false;
-  @Input() error: string | null = null;
-  @Input() title: string = 'Популярные статьи из блога';
-  @Input() showLink: boolean = true;
+  public readonly articles = input<ArticleInterface[]>([]);
+  public readonly isLoading = input<boolean>(false);
+  public readonly error = input<string | null>(null);
+  public readonly title = input<string>('Популярные статьи из блога');
+  public readonly showLink = input<boolean>(true);
+
+  protected readonly hasArticles = computed(() => this.articles().length > 0);
 }
